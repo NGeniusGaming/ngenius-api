@@ -1,0 +1,35 @@
+ngenius:
+  twitch:
+    auth:
+      client-id: ${TWITCH_CLIENT_ID}
+      client-secret: ${TWITCH_CLIENT_SECRET}
+    team-view:
+      cache-seconds: 60
+      channels:
+        - NGeniusGaming
+        - CD_Mangaka
+        - Dashr40
+        - ICrazyJI
+        - SetTopVox
+        - ngen_duo
+        - ngen_zedd
+        - KasumiSSJ
+        - firstofmankind
+        - yiinja
+        - ngenwreck
+        - tappanc
+        - Natejesty
+        - ngen_floridaman
+        - RoyalHeartv2
+        - Sol_xvii
+        - QueenHollow
+        - iCerby
+        - Minimattt
+        - adanimo
+    tournament:
+      cache-seconds: 15
+      channels:
+        - AkihabaraArcade
+        - milehighfightnight
+        - onibakuman
+        - wellbornsteak

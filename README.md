@@ -16,3 +16,12 @@ Your environment should contain:
 `TWITCH_CLIENT_SECRET`- set to your twitch client secret.
 
 [You can learn more about authenticating with Twitch in their developer docs](https://dev.twitch.tv/docs/authentication/#types-of-tokens).
+
+#### Common Errors
+
+If you get a stacktrace along these lines, you did not properly set your configuration environment variables.
+
+```
+There was an unexpected error (type=Internal Server Error, status=500).
+Not enough variable values available to expand 'TWITCH_CLIENT_ID'
+```
