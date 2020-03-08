@@ -25,3 +25,9 @@ If you get a stacktrace along these lines, you did not properly set your configu
 There was an unexpected error (type=Internal Server Error, status=500).
 Not enough variable values available to expand 'TWITCH_CLIENT_ID'
 ```
+
+## Deployments
+
+At this time, updates to the kubernetes ymls must be deployed manually (better solution hopefully coming soon!)
+
+But, new applications are auto-deployed when the are committed to `master` :tada:.
