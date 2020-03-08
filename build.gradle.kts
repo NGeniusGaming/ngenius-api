@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm")
 	kotlin("kapt")
 	kotlin("plugin.spring")
+	id("com.google.cloud.tools.jib")
 }
 
 group = "com.ngenenius.api"
@@ -70,3 +71,5 @@ tasks.withType<KotlinCompile> {
 		jvmTarget = "1.8"
 	}
 }
+
+jib.to.image = "bwvolleyball/ngenius-api"
