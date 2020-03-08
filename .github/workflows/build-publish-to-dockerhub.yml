@@ -24,10 +24,16 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        run: ./gradlew build test jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD
+        run: ./gradlew build test jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD -Djib.to.tags=$GITHUB_SHA
       - name: Deploy to Kubernetes
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KubeConfig }}
         with:
-          args: get pods
+          args: apply -f kubernetes/deploy.yml
+      - name: Set deployment date
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KubeConfig }}
+        with:
+          args: patch deployment ngen-api -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"deploy-date\":\"`date +'%s'`\"}}}}}"
