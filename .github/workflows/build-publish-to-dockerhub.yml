@@ -25,9 +25,10 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
         run: ./gradlew build test jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD
-      - name: Deploy to Kubernetes
-        uses: actions-hub/kubectl@master
+      - name: Deploy to Kubernetes # Using https://github.com/steebchen/kubectl
+        uses: steebchen/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KubeConfig }}
+          KUBE_CONFIG_DATA: ${{ secrets.KubeConfig }}
+          KUBECTL_VERSION: "1.15"
         with:
-          args: rollout restart deployment ngen-api
+          args: '"rollout restart deployment ngen-api"'
