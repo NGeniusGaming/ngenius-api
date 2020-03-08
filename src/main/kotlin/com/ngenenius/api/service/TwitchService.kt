@@ -24,9 +24,15 @@ class TwitchService(private val webClient: WebClient, private val twitch: Twitch
             .authenticationPublisher(webClient, twitch)
     private val teamViewStreamDetails = TwitchStreamDetails
             .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
+    private val tournamentStreamDetails = TwitchStreamDetails
+            .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
 
-    fun streamDetails(): Mono<StreamDetailsResponse> {
+    fun teamViewStreamDetails(): Mono<StreamDetailsResponse> {
         return teamViewStreamDetails
+    }
+
+    fun tournamentViewStreamDetails(): Mono<StreamDetailsResponse> {
+        return tournamentStreamDetails
     }
 
 }
