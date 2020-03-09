@@ -1,4 +1,9 @@
 ngenius:
+  security:
+    cors:
+      allowed-domains:
+        - http://localhost:4200
+        - https://ngeniusgaming.github.io
   twitch:
     auth:
       client-id: ${TWITCH_CLIENT_ID}
