@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ngen-api
-          image: bwvolleyball/ngenius-api
+          image: ngeniusgaming/ngen-api
           imagePullPolicy: Always
           ports:
             - name: listen-port

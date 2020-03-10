@@ -72,4 +72,4 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-jib.to.image = "bwvolleyball/ngenius-api"
+jib.to.image = "ngeniusgaming/ngen-api"
