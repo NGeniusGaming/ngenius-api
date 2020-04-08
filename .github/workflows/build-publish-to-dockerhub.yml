@@ -6,6 +6,10 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ master ]
+  schedule:
+    # Runs every Monday at 3am MST / 10am UTC
+    - cron:  '0 10 * * 1'
+
 
 jobs:
   build:
