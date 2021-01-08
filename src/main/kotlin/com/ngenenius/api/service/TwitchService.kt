@@ -86,6 +86,7 @@ private object TwitchStreamDetails {
                             .get()
                             .uri("https://api.twitch.tv/helix/streams?${twitch.streamsSelector().channelsAsQueryParams()}&first=${twitch.streamsSelector().channels.size}")
                             .header(HttpHeaders.AUTHORIZATION, "Bearer ${auth.accessToken}")
+                             .header("client-id", twitch.auth.clientId)
                             .exchange()
                 }.flatMap { it.bodyToMono<StreamDetailsResponse>() }
                 .doOnEach { it.get()?.apply{
