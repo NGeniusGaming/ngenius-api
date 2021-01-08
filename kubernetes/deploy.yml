@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ngen-api
+  namespace: ngen-api
 spec:
   selector:
     matchLabels:
@@ -15,6 +16,7 @@ spec:
     metadata:
       labels:
         app: ngen-api
+        namespace: ngen-api
     spec:
       containers:
         - name: ngen-api
@@ -23,13 +25,6 @@ spec:
           ports:
             - name: listen-port
               containerPort: 8080
-          resources:
-            requests:
-              cpu: 5m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 256Mi
           env:
             - name: TWITCH_CLIENT_ID
               valueFrom:
@@ -46,12 +41,12 @@ spec:
               path: /actuator/health
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
               scheme: HTTP
-            initialDelaySeconds: 20
+            initialDelaySeconds: 40
             periodSeconds: 10

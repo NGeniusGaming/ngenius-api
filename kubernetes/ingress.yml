@@ -1,11 +1,20 @@
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: api
+  name: ngen-api-ingress
+  namespace: ngen-api
 spec:
-  rules:
-    - http:
-        paths:
-          - backend:
-              serviceName: ngen-api-service
-              servicePort: 8080
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`api.ngen-alpha.duckdns.org`)
+      kind: Rule
+      services:
+        - name: ngen-api-service
+          kind: Service
+          port: 8080
+  tls:
+    certResolver: letsencrypt
+    domains:
+      - main: ngen-alpha.duckdns.org
+        sans: [ "*.ngen-alpha.duckdns.org" ]
