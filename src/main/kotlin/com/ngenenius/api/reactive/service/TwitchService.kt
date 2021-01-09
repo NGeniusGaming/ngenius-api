@@ -1,4 +1,4 @@
-package com.ngenenius.api.service
+package com.ngenenius.api.reactive.service
 
 import com.ngenenius.api.config.TwitchProperties
 import com.ngenenius.api.config.TwitchStreamsProperties
@@ -20,12 +20,11 @@ private val NO_CACHE_ERROR: (Throwable) -> Duration = { global.error("Failed req
 @Service
 class TwitchService(private val webClient: WebClient, private val twitch: TwitchProperties) {
 
-    private val authenticationPublisher = TwitchServiceAuthentication
-            .authenticationPublisher(webClient, twitch)
-    private val teamViewStreamDetails = TwitchStreamDetails
-            .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
-    private val tournamentStreamDetails = TwitchStreamDetails
-            .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
+    private val authenticationPublisher = TwitchServiceAuthentication.authenticationPublisher(webClient, twitch)
+    private val teamViewStreamDetails =
+        TwitchStreamDetails.streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
+    private val tournamentStreamDetails =
+        TwitchStreamDetails.streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
 
     fun teamViewStreamDetails(): Mono<StreamDetailsResponse> {
         return teamViewStreamDetails

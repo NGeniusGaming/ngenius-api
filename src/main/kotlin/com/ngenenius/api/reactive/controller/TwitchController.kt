@@ -1,7 +1,7 @@
-package com.ngenenius.api.controller
+package com.ngenenius.api.reactive.controller
 
 import com.ngenenius.api.model.twitch.StreamDetailsResponse
-import com.ngenenius.api.service.TwitchService
+import com.ngenenius.api.reactive.service.TwitchService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
