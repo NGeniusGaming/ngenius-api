@@ -17,16 +17,6 @@ val springCloudVersion: String by project
 val kotlinVersion: String by project
 val kotlinLogging: String by project
 
-val developmentOnly by configurations.creating
-configurations {
-	runtimeClasspath {
-		extendsFrom(developmentOnly)
-	}
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
-
 repositories {
 	mavenCentral()
 }
@@ -38,8 +28,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("io.github.microutils:kotlin-logging")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("io.github.microutils:kotlin-logging-jvm")
+	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	// literally only here to make IntelliJ happy - magic happens from the 'kapt' one. May not work with @ConstructorBinding?
 	compileOnly("org.springframework.boot:spring-boot-configuration-processor")
@@ -56,7 +46,7 @@ dependencyManagement {
 		}
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
 		dependencies {
-			dependency("io.github.microutils:kotlin-logging:$kotlinLogging")
+			dependency("io.github.microutils:kotlin-logging-jvm:$kotlinLogging")
 		}
 	}
 }
