@@ -24,7 +24,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        run: ./gradlew build test jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD
+        run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
       - name: Deploy to Kubernetes # Using https://github.com/steebchen/kubectl
         uses: steebchen/kubectl@master
         env:

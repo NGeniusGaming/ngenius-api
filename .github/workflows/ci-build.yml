@@ -24,4 +24,4 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        run: ./gradlew build test jib -Pdocker.tag=snapshot -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD
+        run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD

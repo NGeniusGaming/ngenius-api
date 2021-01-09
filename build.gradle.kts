@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
 	id("org.springframework.boot")
@@ -59,6 +60,19 @@ tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "1.8"
+	}
+}
+
+tasks.getByName<BootBuildImage>("bootBuildImage") {
+	imageName = "ngeniusgaming/ngen-api:${project.findProperty("docker.tag") ?: "latest"}"
+	isPublish = project.hasProperty("docker.publish")
+	docker {
+		publishRegistry {
+			username = project.findProperty("docker.username")?.toString() ?: "user"
+			password = project.findProperty("docker.password")?.toString() ?: "secret"
+			url = "https://registry.hub.docker.com/"
+			email = "ngeniusgaming@noreply.com"
+		}
 	}
 }
 
