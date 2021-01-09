@@ -7,7 +7,6 @@ plugins {
 	kotlin("jvm")
 	kotlin("kapt")
 	kotlin("plugin.spring")
-	id("com.google.cloud.tools.jib")
 }
 
 group = "com.ngenenius.api"
@@ -75,5 +74,3 @@ tasks.getByName<BootBuildImage>("bootBuildImage") {
 		}
 	}
 }
-
-jib.to.image = "ngeniusgaming/ngen-api:${project.findProperty("docker.tag") ?: "latest"}"
