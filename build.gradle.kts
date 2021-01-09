@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
 	id("org.springframework.boot")
@@ -6,7 +7,6 @@ plugins {
 	kotlin("jvm")
 	kotlin("kapt")
 	kotlin("plugin.spring")
-	id("com.google.cloud.tools.jib")
 }
 
 group = "com.ngenenius.api"
@@ -16,16 +16,6 @@ val springBootVersion: String by project
 val springCloudVersion: String by project
 val kotlinVersion: String by project
 val kotlinLogging: String by project
-
-val developmentOnly by configurations.creating
-configurations {
-	runtimeClasspath {
-		extendsFrom(developmentOnly)
-	}
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
 
 repositories {
 	mavenCentral()
@@ -38,8 +28,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-	implementation("io.github.microutils:kotlin-logging")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("io.github.microutils:kotlin-logging-jvm")
+	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	// literally only here to make IntelliJ happy - magic happens from the 'kapt' one. May not work with @ConstructorBinding?
 	compileOnly("org.springframework.boot:spring-boot-configuration-processor")
@@ -56,7 +46,7 @@ dependencyManagement {
 		}
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
 		dependencies {
-			dependency("io.github.microutils:kotlin-logging:$kotlinLogging")
+			dependency("io.github.microutils:kotlin-logging-jvm:$kotlinLogging")
 		}
 	}
 }
@@ -72,4 +62,15 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-jib.to.image = "ngeniusgaming/ngen-api"
+tasks.getByName<BootBuildImage>("bootBuildImage") {
+	imageName = "ngeniusgaming/ngen-api:${project.findProperty("docker.tag") ?: "latest"}"
+	isPublish = project.hasProperty("docker.publish")
+	docker {
+		publishRegistry {
+			username = project.findProperty("docker.username")?.toString() ?: "user"
+			password = project.findProperty("docker.password")?.toString() ?: "secret"
+			url = "https://registry.hub.docker.com/"
+			email = "ngeniusgaming@noreply.com"
+		}
+	}
+}

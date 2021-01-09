@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: ngen-api
-          image: ngeniusgaming/ngen-api
+          image: ngeniusgaming/ngen-api:release
           imagePullPolicy: Always
           ports:
             - name: listen-port

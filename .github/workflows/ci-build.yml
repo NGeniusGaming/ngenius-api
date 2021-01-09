@@ -5,7 +5,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ master ]
+    branches-ignore: [ master ]
 
 jobs:
   build:
@@ -24,11 +24,4 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
-      - name: Deploy to Kubernetes # Using https://github.com/steebchen/kubectl
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KubeConfig }}
-          KUBECTL_VERSION: "1.18"
-        with:
-          args: '"rollout restart deployment ngen-api -n ngen-api"'
+        run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
