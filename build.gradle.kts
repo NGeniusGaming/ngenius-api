@@ -62,4 +62,4 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-jib.to.image = "ngeniusgaming/ngen-api"
+jib.to.image = "ngeniusgaming/ngen-api:${project.findProperty("docker.tag") ?: "latest"}"
