@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
 @ConfigurationPropertiesScan
-@SpringBootApplication()
+@SpringBootApplication
 class NgeniusApiApplication
 
 fun main(args: Array<String>) {

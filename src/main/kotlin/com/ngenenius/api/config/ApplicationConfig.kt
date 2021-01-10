@@ -5,11 +5,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.reactive.CorsWebFilter
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -44,24 +46,10 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
      * Enable CORS protection for all endpoints.
      */
     @Bean
-    fun reactiveCorsWebFilter(corsConfiguration: CorsConfiguration): CorsWebFilter {
-        val urlSource = UrlBasedCorsConfigurationSource()
-        urlSource.registerCorsConfiguration("/**", corsConfiguration)
-
-        return CorsWebFilter(urlSource)
-    }
-
-    /**
-     * Enable CORS protection for all endpoints.
-     */
-    @Bean
-    fun webCorsConfigurer(corsConfiguration: CorsConfiguration): WebMvcConfigurer {
-        return object : WebMvcConfigurer {
-            override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/**")
-                    .combine(corsConfiguration)
-            }
-        }
+    fun corsConfigurationSource(corsConfiguration: CorsConfiguration): CorsConfigurationSource {
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", corsConfiguration)
+        return source
     }
 
     /**
@@ -71,8 +59,11 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
     fun mvcSecurityAdapter(): WebSecurityConfigurerAdapter {
         return object : WebSecurityConfigurerAdapter() {
             override fun configure(http: HttpSecurity) {
-                http.authorizeRequests()
-                    .anyRequest().permitAll()
+                http.cors()
+                    .and()
+                    .authorizeRequests()
+                    .anyRequest()
+                    .permitAll()
             }
         }
     }
