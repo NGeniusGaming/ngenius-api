@@ -68,7 +68,7 @@ class TwitchService(
             .retrieve()
             .onStatus({!it.is2xxSuccessful}, { Mono.just(IllegalStateException("Twitch API Received Status Code: ${it.statusCode()} - Try again later.")) })
             .bodyToMono<StreamDetailsResponse>()
-            .block(Duration.ofSeconds(10L)) ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
+            .block(Duration.ofSeconds(30L)) ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
     }
 
 }
