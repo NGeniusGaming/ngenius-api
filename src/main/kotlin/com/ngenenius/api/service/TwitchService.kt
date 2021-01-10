@@ -1,97 +1,74 @@
 package com.ngenenius.api.service
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.ngenenius.api.config.TwitchProperties
 import com.ngenenius.api.config.TwitchStreamsProperties
-import com.ngenenius.api.model.twitch.OAuthTokenResponse
 import com.ngenenius.api.model.twitch.StreamDetailsResponse
 import mu.KotlinLogging
-import org.springframework.http.HttpHeaders
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import java.time.Duration
 
-private val global = KotlinLogging.logger { }
+private val logger = KotlinLogging.logger {  }
 
-private val NO_CACHE: () -> Duration = { Duration.ZERO }
-private val NO_CACHE_ERROR: (Throwable) -> Duration = { global.error("Failed request, will not cache!", it); Duration.ZERO }
-
-@Service
-class TwitchService(private val webClient: WebClient, private val twitch: TwitchProperties) {
-
-    private val authenticationPublisher = TwitchServiceAuthentication
-            .authenticationPublisher(webClient, twitch)
-    private val teamViewStreamDetails = TwitchStreamDetails
-            .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
-    private val tournamentStreamDetails = TwitchStreamDetails
-            .streamDetailsPublisher(webClient, twitch, authenticationPublisher) { teamView }
-
-    fun teamViewStreamDetails(): Mono<StreamDetailsResponse> {
-        return teamViewStreamDetails
-    }
-
-    fun tournamentViewStreamDetails(): Mono<StreamDetailsResponse> {
-        return tournamentStreamDetails
-    }
-
-}
-
-private object TwitchServiceAuthentication {
-
-    val logger = KotlinLogging.logger { }
+@Component
+class TwitchService(
+    private val twitchWebClient: WebClient,
+    private val twitch: TwitchProperties,
+    private val twitchResponseCache: Cache<String, StreamDetailsResponse>
+) {
 
     /**
-     * If we access this publisher from a static context and re-use the initial value
-     * of this method, we effectively have our authentication token cached for the length of the
-     * life of the token (minus 5 seconds), and we'll retrieve a new token only when our token is about to expire, or has already expired.
-     *
-     * SLICK A.F.
+     * Retrieve [StreamDetailsResponse] for the team view page.
      */
-    fun authenticationPublisher(webClient: WebClient, twitch: TwitchProperties): Mono<OAuthTokenResponse> {
-        return webClient
-                .post()
-                .uri("https://id.twitch.tv/oauth2/token?client_id=${twitch.auth.clientId}&client_secret=${twitch.auth.clientSecret}&grant_type=client_credentials")
-                .exchange()
-                .flatMap { it.bodyToMono<OAuthTokenResponse>() }
-                .doOnEach {
-                    it.get()?.apply{
-                        logger.info("Received an authentication token! type [{}], valid for [{} minutes]",
-                                this.tokenType,
-                                Duration.ofMillis(this.expiresIn).toMinutes()
-                        )
-                    }
-                }
-                .cache({ Duration.ofMillis(it.expiresIn - 5000) }, NO_CACHE_ERROR, NO_CACHE)
+    fun teamViewDetails(): StreamDetailsResponse {
+        return streamDetails { teamView }
     }
-}
-
-private object TwitchStreamDetails {
-    val logger = KotlinLogging.logger { }
 
     /**
-     * Another cacheable publisher that receives a web client, twitch properties, and a mono of our OAuth Token response.
-     * This publisher queries the twitch api for stream details and returns the results.
-     *
-     * In the new Twitch API:
-     * curl -H "Authorization: Bearer <access token>" https://api.twitch.tv/helix/
+     * Retrieve [StreamDetailsResponse] for the tournament view page.
      */
-    fun streamDetailsPublisher(webClient: WebClient,
-                               twitch: TwitchProperties,
-                               authentication: Mono<OAuthTokenResponse>,
-                               streamsSelector: TwitchProperties.() -> TwitchStreamsProperties
-    ): Mono<StreamDetailsResponse> {
-        return authentication.flatMap { auth ->
-                    webClient
-                            .get()
-                            .uri("https://api.twitch.tv/helix/streams?${twitch.streamsSelector().channelsAsQueryParams()}&first=${twitch.streamsSelector().channels.size}")
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer ${auth.accessToken}")
-                             .header("client-id", twitch.auth.clientId)
-                            .exchange()
-                }.flatMap { it.bodyToMono<StreamDetailsResponse>() }
-                .doOnEach { it.get()?.apply{
-                    logger.debug("Received stream details that will be cached for {} seconds!\n[{}]", twitch.streamsSelector().cacheSeconds, this) } }
-                .doOnEach { it.get()?.apply{ logger.info("The following streams are currently live: [{}]", this.data.map{ s -> s.userName }) } }
-                .cache({ Duration.ofSeconds(twitch.streamsSelector().cacheSeconds) }, NO_CACHE_ERROR, NO_CACHE)
+    fun tournamentDetails(): StreamDetailsResponse {
+        return streamDetails { tournament }
     }
+
+    /**
+     * Compute a cache key from the calling function (i.e. [teamViewDetails] or [tournamentDetails])
+     * and then pass it off to the cache manager to either return from cache or re-query Twitch for new details.
+     */
+    private fun streamDetails(streamFn: TwitchProperties.() -> TwitchStreamsProperties): StreamDetailsResponse {
+        val stream = twitch.streamFn()
+        val key = streamFn.javaClass.simpleName.substringBefore('$')
+        if (stream.channels.size > 100) {
+            // if we start seeing this log, we need to re-vamp the call to twitch to chunk requests by 100 and merge to a complete response.
+            logger.warn("Channels list for $key() is greater than 100. Only the first 100 are returned per call.")
+        }
+        return internalStreamDetails(key, stream)
+    }
+
+    /**
+     * Perform a cache lookup from the [key]. If no cached data is found, use the provided [TwitchStreamsProperties]
+     * to query (and cache) new data for this [key].  This will prevent abuse of the Twitch API.
+     */
+    private fun internalStreamDetails(key: String, stream: TwitchStreamsProperties): StreamDetailsResponse {
+        logger.debug("Attempting rapid lookup of [{}]", key)
+        return twitchResponseCache.get(key) {twitchStreamsRequest(it, stream)} ?: throw NullPointerException("Nothing available from Twitch.")
+    }
+
+    /**
+     * Execute a GET to the Twitch Helix Streams API to deduce who's online and details about their current stream.
+     */
+    private fun twitchStreamsRequest(key: String, stream: TwitchStreamsProperties): StreamDetailsResponse {
+        logger.debug("cache miss for [{}], retrieving details from Twitch.", key)
+        return twitchWebClient.get()
+            .uri("/helix/streams?${stream.channelsAsQueryParams()}&first=${stream.channels.size}")
+            .header("Client-Id", twitch.auth.clientId)
+            .retrieve()
+            .onStatus({!it.is2xxSuccessful}, { Mono.just(IllegalStateException("Twitch API Received Status Code: ${it.statusCode()} - Try again later.")) })
+            .bodyToMono<StreamDetailsResponse>()
+            .block(Duration.ofSeconds(30L)) ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
+    }
+
 }

@@ -1,3 +1,18 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          twitch:
+            client-id: ${ngenius.twitch.auth.client-id}
+            client-secret: ${ngenius.twitch.auth.client-secret}
+            client-name: twitch
+            authorization-grant-type: client_credentials
+            client-authentication-method: POST
+        provider:
+          twitch:
+            token-uri: https://id.twitch.tv/oauth2/token
+
 ngenius:
   security:
     cors:
@@ -9,7 +24,6 @@ ngenius:
       client-id: ${TWITCH_CLIENT_ID}
       client-secret: ${TWITCH_CLIENT_SECRET}
     team-view:
-      cache-seconds: 60
       channels:
         - NGeniusGaming
         - CD_Mangaka
@@ -32,9 +46,14 @@ ngenius:
         - Minimattt
         - adanimo
     tournament:
-      cache-seconds: 15
       channels:
         - AkihabaraArcade
         - milehighfightnight
         - onibakuman
         - wellbornsteak
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
