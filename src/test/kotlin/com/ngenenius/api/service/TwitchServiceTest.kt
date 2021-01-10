@@ -115,6 +115,21 @@ internal class TwitchServiceTest {
 
     @MethodSource("publicMethods")
     @ParameterizedTest
+    fun `Subsequent calls to this service should pull from the cache`(methodUnderTest: MethodUnderTest) {
+        twitchApiMockServer.enqueue(
+            MockResponse().setResponseCode(200)
+                .setBody(validResponse)
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        )
+
+        // call multiple times quick.
+        (0..10).map { methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() } }
+
+        assertThat(twitchApiMockServer.requestCount).isEqualTo(1)
+    }
+
+    @MethodSource("publicMethods")
+    @ParameterizedTest
     fun `Should hit the helix streams endpoint`(methodUnderTest: MethodUnderTest) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(200)
