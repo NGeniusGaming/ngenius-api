@@ -34,7 +34,6 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("io.github.microutils:kotlin-logging-jvm")
 	implementation("com.github.ben-manes.caffeine:caffeine")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
@@ -48,7 +47,6 @@ dependencies {
 	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin")
 	testImplementation("com.squareup.okhttp3:mockwebserver")
 	testImplementation("org.assertj:assertj-core:3.18.1")
-	testImplementation("io.projectreactor:reactor-test")
 }
 
 dependencyManagement {

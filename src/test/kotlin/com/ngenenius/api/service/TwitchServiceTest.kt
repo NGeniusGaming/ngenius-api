@@ -159,6 +159,7 @@ internal class TwitchServiceTest {
         assertThat(cache.asMap()).isEmpty()
     }
 
+    // TODO: Currently, this test uses real time, so it takes 20 seconds. Can we mock time?
     @MethodSource("publicMethods")
     @ParameterizedTest
     fun `The request should time out after 10 seconds`(methodUnderTest: MethodUnderTest) {
