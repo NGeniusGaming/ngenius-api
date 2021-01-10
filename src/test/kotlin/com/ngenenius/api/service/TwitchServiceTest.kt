@@ -1,4 +1,4 @@
-package com.ngenenius.api.web.service
+package com.ngenenius.api.service
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
  */
 private const val validResponse = "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"user-1\",\"game_id\":\"1\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"user-2\",\"game_id\":\"2\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
 
-internal class TwitchServiceV2Test {
+internal class TwitchServiceTest {
 
     private lateinit var twitchApiMockServer: MockWebServer
     private lateinit var webClient: WebClient
@@ -42,7 +42,7 @@ internal class TwitchServiceV2Test {
 
     private val cache = Caffeine.newBuilder().build<String, StreamDetailsResponse>()
 
-    private lateinit var service: TwitchServiceV2
+    private lateinit var service: TwitchService
 
     @BeforeEach
     fun setup() {
@@ -55,7 +55,7 @@ internal class TwitchServiceV2Test {
         // create beans / class under test
         webClient = WebClient.create(url)
 
-        service = TwitchServiceV2(webClient, twitch, cache)
+        service = TwitchService(webClient, twitch, cache)
 
         // mocks
         whenever(teamView.channels).thenReturn(listOf("channel1", "channel2"))
@@ -185,7 +185,7 @@ internal class TwitchServiceV2Test {
         )
     }
 
-    internal class MethodUnderTest(private val name: String, val fn: TwitchServiceV2.() -> StreamDetailsResponse) {
+    internal class MethodUnderTest(private val name: String, val fn: TwitchService.() -> StreamDetailsResponse) {
         override fun toString() = name
     }
 

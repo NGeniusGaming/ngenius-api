@@ -1,4 +1,4 @@
-package com.ngenenius.api.web.service
+package com.ngenenius.api.service
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.ngenenius.api.config.TwitchProperties
@@ -10,12 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import java.time.Duration
-import java.util.concurrent.TimeoutException
 
 private val logger = KotlinLogging.logger {  }
 
 @Component
-class TwitchServiceV2(
+class TwitchService(
     private val twitchWebClient: WebClient,
     private val twitch: TwitchProperties,
     private val twitchResponseCache: Cache<String, StreamDetailsResponse>
