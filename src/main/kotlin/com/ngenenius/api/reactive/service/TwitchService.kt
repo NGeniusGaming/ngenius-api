@@ -17,6 +17,7 @@ private val global = KotlinLogging.logger { }
 private val NO_CACHE: () -> Duration = { Duration.ZERO }
 private val NO_CACHE_ERROR: (Throwable) -> Duration = { global.error("Failed request, will not cache!", it); Duration.ZERO }
 
+@Deprecated("Will be removed")
 @Service
 class TwitchService(private val webClient: WebClient, private val twitch: TwitchProperties) {
 
@@ -36,6 +37,7 @@ class TwitchService(private val webClient: WebClient, private val twitch: Twitch
 
 }
 
+@Deprecated("Will be removed")
 private object TwitchServiceAuthentication {
 
     val logger = KotlinLogging.logger { }
@@ -65,6 +67,7 @@ private object TwitchServiceAuthentication {
     }
 }
 
+@Deprecated("Will be removed")
 private object TwitchStreamDetails {
     val logger = KotlinLogging.logger { }
 

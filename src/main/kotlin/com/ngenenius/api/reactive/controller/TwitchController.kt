@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
+@Deprecated("Will be removed")
 @RestController
 @RequestMapping("/twitch")
 class TwitchController(private val twitchService: TwitchService) {
