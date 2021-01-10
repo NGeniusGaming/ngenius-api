@@ -24,7 +24,6 @@ ngenius:
       client-id: ${TWITCH_CLIENT_ID}
       client-secret: ${TWITCH_CLIENT_SECRET}
     team-view:
-      cache-seconds: 60
       channels:
         - NGeniusGaming
         - CD_Mangaka
@@ -47,7 +46,6 @@ ngenius:
         - Minimattt
         - adanimo
     tournament:
-      cache-seconds: 15
       channels:
         - AkihabaraArcade
         - milehighfightnight

@@ -40,10 +40,6 @@ data class TwitchStreamsProperties(
      * The channels list to query for in this twitch streams container.
      */
     val channels: List<String>,
-    /**
-     * The duration (in seconds) to cache the streams details for.
-     */
-    val cacheSeconds: Long
 ) {
     /**
      * Helper function to convert a list of channels to the query params string the Twitch API expects.
