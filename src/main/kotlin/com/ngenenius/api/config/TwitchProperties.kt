@@ -35,6 +35,7 @@ data class TwitchAuthProperties(
     val clientSecret: String
 )
 
+@Deprecated("Deprecated for now - may make a resurgence. Need to populate from Streamer properties.")
 data class TwitchStreamsProperties(
     /**
      * The channels list to query for in this twitch streams container.
