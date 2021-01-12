@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`api.ngen-alpha.duckdns.org`)
+    - match: Host(`api.ngeniusgaming.us`)
       kind: Rule
       services:
         - name: ngen-api-service
@@ -16,5 +16,5 @@ spec:
   tls:
     certResolver: letsencrypt
     domains:
-      - main: ngen-alpha.duckdns.org
-        sans: [ "*.ngen-alpha.duckdns.org" ]
+      - main: ngeniusgaming.us
+        sans: [ "*.ngeniusgaming.us" ]
