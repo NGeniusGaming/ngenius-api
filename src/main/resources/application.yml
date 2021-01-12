@@ -19,6 +19,7 @@ ngenius:
       allowed-domains:
         - http://localhost:4200
         - https://ngeniusgaming.github.io
+        - https://ngeniusesports.com
   twitch:
     auth:
       client-id: ${TWITCH_CLIENT_ID}
