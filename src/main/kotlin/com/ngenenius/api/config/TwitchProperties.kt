@@ -14,16 +14,11 @@ data class TwitchProperties(
      * The authentication properties container for twitch.
      */
     @NestedConfigurationProperty val auth: TwitchAuthProperties,
-    /**
-     * The configuration for the team-view twitch data
-     */
-    @NestedConfigurationProperty val teamView: TwitchStreamsProperties,
-    /**
-     * The configuration for the tournament view twitch data
-     */
-    @NestedConfigurationProperty val tournament: TwitchStreamsProperties
 )
 
+/**
+ * The configuration holder for our twitch client id and client secret.
+ */
 data class TwitchAuthProperties(
     /**
      * The client id for twitch authentication.
@@ -34,15 +29,3 @@ data class TwitchAuthProperties(
      */
     val clientSecret: String
 )
-
-data class TwitchStreamsProperties(
-    /**
-     * The channels list to query for in this twitch streams container.
-     */
-    val channels: List<String>,
-) {
-    /**
-     * Helper function to convert a list of channels to the query params string the Twitch API expects.
-     */
-    fun channelsAsQueryParams() = channels.joinToString("&") { "user_login=$it" }
-}
