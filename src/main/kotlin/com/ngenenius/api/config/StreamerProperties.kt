@@ -5,9 +5,28 @@ import com.ngenenius.api.model.platform.StreamingTab
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
+interface StreamerProvider {
+    fun channelNames(platform: StreamingProvider, tab: StreamingTab): Channels
+}
+
+interface TwitchStreamerProvider: StreamerProvider {
+
+    fun twitchStreamersFor(tab: StreamingTab): Channels {
+        return channelNames(StreamingProvider.TWITCH, tab)
+    }
+}
+
 @ConstructorBinding
 @ConfigurationProperties(prefix = "ngenius.streamer")
-data class StreamerProperties(val channels: List<ChannelProperties>)
+data class StreamerProperties(val channels: List<ChannelProperties>): StreamerProvider, TwitchStreamerProvider {
+
+    override fun channelNames(platform: StreamingProvider, tab: StreamingTab) =
+        Channels(
+            channels.filter{it.platform == platform}
+                .filter{it.tabs.contains(tab)}
+                .map{ it.id }
+        )
+}
 
 data class ChannelProperties(
     /**
@@ -23,3 +42,10 @@ data class ChannelProperties(
      */
     val tabs: List<StreamingTab>
 )
+
+data class Channels(val channels: List<String>) {
+    /**
+     * Helper function to convert a list of channels to the query params string the Twitch API expects.
+     */
+    fun channelsAsQueryParams() = channels.joinToString("&") { "user_login=$it" }
+}

@@ -3,14 +3,13 @@ package com.ngenenius.api.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.ngenenius.api.config.Channels
 import com.ngenenius.api.config.TwitchAuthProperties
 import com.ngenenius.api.config.TwitchProperties
-import com.ngenenius.api.config.TwitchStreamsProperties
+import com.ngenenius.api.config.TwitchStreamerProvider
+import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetailsResponse
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -34,11 +33,14 @@ internal class TwitchServiceTest {
     private lateinit var twitchApiMockServer: MockWebServer
     private lateinit var webClient: WebClient
 
-    private val auth = mock<TwitchAuthProperties>()
-    private val teamView = mock<TwitchStreamsProperties>()
-    private val tournament = mock<TwitchStreamsProperties>()
+    private val twitchStreamerProvider=  mock<TwitchStreamerProvider>()
 
-    private val twitch = TwitchProperties(auth, teamView, tournament)
+    private val auth = mock<TwitchAuthProperties>()
+
+    private val teamView = mock<Channels>()
+    private val tournament = mock<Channels>()
+
+    private val twitch = TwitchProperties(auth)
 
     private val cache = Caffeine.newBuilder().build<String, StreamDetailsResponse>()
 
@@ -55,7 +57,10 @@ internal class TwitchServiceTest {
         // create beans / class under test
         webClient = WebClient.create(url)
 
-        service = TwitchService(webClient, twitch, cache)
+        service = TwitchService(webClient, twitch, twitchStreamerProvider, cache)
+
+        whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
+        whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
 
         // mocks
         whenever(teamView.channels).thenReturn(listOf("channel1", "channel2"))
