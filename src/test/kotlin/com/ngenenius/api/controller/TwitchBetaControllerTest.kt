@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 internal class TwitchBetaControllerTest {
 
     private val twitchService = mock<TwitchStreamsService>()
-    private val controller = TwitchBetaController(twitchService)
+    private val controller = TwitchBetaController(twitchService, mock())
 
     @Test
     fun `Should use the twitch service for team view details when getting team view`() {
