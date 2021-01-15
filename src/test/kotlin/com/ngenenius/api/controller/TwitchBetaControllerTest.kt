@@ -7,10 +7,10 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.jupiter.api.Test
 
-internal class TwitchControllerTest {
+internal class TwitchBetaControllerTest {
 
     private val twitchService = mock<TwitchService>()
-    private val controller = TwitchController(twitchService)
+    private val controller = TwitchBetaController(twitchService)
 
     @Test
     fun `Should use the twitch service for team view details when getting team view`() {

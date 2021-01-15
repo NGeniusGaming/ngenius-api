@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/twitch")
-class TwitchController(private val twitchService: TwitchService) {
+class TwitchBetaController(private val twitchService: TwitchService) {
 
     @GetMapping("/team-view")
     fun teamView() = twitchService.teamViewDetails()
