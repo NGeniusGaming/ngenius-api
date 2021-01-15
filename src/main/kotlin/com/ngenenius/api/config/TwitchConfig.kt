@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
+import com.ngenenius.api.model.twitch.UserDetails
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
@@ -71,13 +72,25 @@ class TwitchConfig {
     }
 
     /**
-     * A very small caffeine cache that expires items every 60 seconds,
+     * A caffeine cache that expires items every 60 seconds,
      * meaning at most we will query twitch once-per-minute, per-dataset, (per instance)
      */
     @Bean
     fun twitchStreamsCache(): Cache<String, TwitchResponse<StreamDetails>> {
         return Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(60L))
+            .build()
+    }
+
+    /**
+     * This caffeine cache expires items every 5 minutes for UserDetails,
+     * which update less frequently nor demand as real-time of stats as the
+     * details of a potential live stream.
+     */
+    @Bean
+    fun twitchUsersCache(): Cache<String, TwitchResponse<UserDetails>> {
+        return Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(5L))
             .build()
     }
 }

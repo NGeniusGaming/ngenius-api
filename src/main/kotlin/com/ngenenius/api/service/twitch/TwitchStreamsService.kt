@@ -19,7 +19,7 @@ class TwitchStreamsService(
     private val twitchWebClient: WebClient,
     private val twitch: TwitchProperties,
     private val twitchStreamerProvider: TwitchStreamerProvider,
-    private val twitchResponseCache: Cache<String, TwitchResponse<StreamDetails>>
+    private val twitchStreamsCache: Cache<String, TwitchResponse<StreamDetails>>
 ) {
 
     /**
@@ -56,7 +56,7 @@ class TwitchStreamsService(
      */
     private fun internalStreamDetails(key: String, stream: Channels): TwitchResponse<StreamDetails> {
         logger.debug("Attempting rapid lookup of [{}]", key)
-        return twitchResponseCache.get(key) {twitchStreamsRequest(it, stream)} ?: throw NullPointerException("Nothing available from Twitch.")
+        return twitchStreamsCache.get(key) {twitchStreamsRequest(it, stream)} ?: throw NullPointerException("Nothing available from Twitch.")
     }
 
     /**
