@@ -9,10 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
  * in order to retrieve all of the results to your desired operation.
  */
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-data class TwitchResponse<RESPONSE_TYPE>(
-    val data: List<RESPONSE_TYPE>,
+internal data class TwitchResponse<RESPONSE_TYPE>(
+    val data: Collection<RESPONSE_TYPE>,
     val pagination: TwitchPagination
 )
 
+/**
+ * A Twitch pagination cursor for requests that include more than 100 records of data.
+ * To be used with the ?after=[cursor] query parameter.
+ */
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-data class TwitchPagination(val cursor: String = "")
+internal data class TwitchPagination(val cursor: String = "")

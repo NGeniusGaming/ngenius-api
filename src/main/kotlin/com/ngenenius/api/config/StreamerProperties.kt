@@ -2,6 +2,7 @@ package com.ngenenius.api.config
 
 import com.ngenenius.api.model.platform.StreamingProvider
 import com.ngenenius.api.model.platform.StreamingTab
+import com.ngenenius.api.service.twitch.toQueryParams
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
@@ -43,9 +44,4 @@ data class ChannelProperties(
     val tabs: List<StreamingTab>
 )
 
-data class Channels(val channels: List<String>) {
-    /**
-     * Helper function to convert a list of channels to the query params string the Twitch API expects.
-     */
-    fun channelsAsQueryParams() = channels.joinToString("&") { "user_login=$it" }
-}
+data class Channels(val channels: List<String>)

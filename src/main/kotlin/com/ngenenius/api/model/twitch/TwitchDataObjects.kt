@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 /**
- * The data object for https://dev.twitch.tv/docs/api/reference#get-streams
+ * The data object for [the Get Streams API](https://dev.twitch.tv/docs/api/reference#get-streams)
  */
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class StreamDetails(
@@ -22,11 +22,11 @@ data class StreamDetails(
     val startedAt: String,
     val language: String,
     val thumbnailUrl: String,
-    val tagIds: List<String> = listOf()
+    val tagIds: Collection<String> = listOf()
 )
 
 /**
- * The data object for https://dev.twitch.tv/docs/api/reference#get-users
+ * The data object for [the Get Users API](https://dev.twitch.tv/docs/api/reference#get-users)
  *
  * The email param is intentionally left off.  We don't need PII.
  */

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.ngenenius.api.config.Channels
-import com.ngenenius.api.config.TwitchAuthProperties
-import com.ngenenius.api.config.TwitchProperties
 import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
@@ -28,7 +26,7 @@ import java.util.concurrent.TimeUnit
 /**
  * A sample, valid streams response containing 2 stream details.
  */
-private const val validResponse = "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"user-1\",\"game_id\":\"1\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"user-2\",\"game_id\":\"2\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
+private const val validResponse = "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"channel1\",\"game_id\":\"1\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"channel2\",\"game_id\":\"2\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
 
 internal class TwitchServiceTest {
 
@@ -37,10 +35,11 @@ internal class TwitchServiceTest {
 
     private val twitchStreamerProvider=  mock<TwitchStreamerProvider>()
 
-    private val teamView = mock<Channels>()
-    private val tournament = mock<Channels>()
+    // keys must match data in the valid response object usernames.
+    private val teamView = Channels(listOf("channel1", "channel2"))
+    private val tournament = Channels(listOf("channel1", "channel2"))
 
-    private val cache = Caffeine.newBuilder().build<String, TwitchResponse<StreamDetails>>()
+    private val cache = Caffeine.newBuilder().build<String, StreamDetails>()
 
     private lateinit var streamsService: TwitchStreamsService
 
@@ -59,13 +58,6 @@ internal class TwitchServiceTest {
 
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
-
-        // mocks
-        whenever(teamView.channels).thenReturn(listOf("channel1", "channel2"))
-        whenever(teamView.channelsAsQueryParams()).thenReturn("user_login=channel1&user_login=channel2")
-
-        whenever(tournament.channels).thenReturn(listOf("tourney1", "tourney2"))
-        whenever(tournament.channelsAsQueryParams()).thenReturn("user_login=tourney1&user_login=tourney2")
     }
 
     @AfterEach
@@ -90,9 +82,10 @@ internal class TwitchServiceTest {
         val result = methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         val objectMapper = jacksonObjectMapper()
-        val validResponseObject = objectMapper.readValue<TwitchResponse<StreamDetails>>(validResponse)
+        // the api extracts the data and reduces to a set.
+        val expectedResult = objectMapper.readValue<TwitchResponse<StreamDetails>>(validResponse).data.toSet()
 
-        assertThat(result).isEqualTo(validResponseObject)
+        assertThat(result).isEqualTo(expectedResult)
     }
 
     @MethodSource("publicMethods")
@@ -139,7 +132,7 @@ internal class TwitchServiceTest {
 
         methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
-        assertThat(cache.asMap()).hasSize(1)
+        assertThat(cache.asMap()).hasSize(2).containsKeys("channel1", "channel2")
     }
 
     @MethodSource("publicMethods")
@@ -166,7 +159,7 @@ internal class TwitchServiceTest {
         )
     }
 
-    internal class MethodUnderTest(private val name: String, val fn: TwitchStreamsService.() -> TwitchResponse<StreamDetails>) {
+    internal class MethodUnderTest(private val name: String, val fn: TwitchStreamsService.() -> Collection<StreamDetails>) {
         override fun toString() = name
     }
 
