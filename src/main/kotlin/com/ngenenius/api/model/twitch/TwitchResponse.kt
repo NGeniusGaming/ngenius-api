@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 internal data class TwitchResponse<RESPONSE_TYPE>(
     val data: Collection<RESPONSE_TYPE>,
-    val pagination: TwitchPagination
+    val pagination: TwitchPagination = TwitchPagination()
 )
 
 /**
@@ -19,4 +19,4 @@ internal data class TwitchResponse<RESPONSE_TYPE>(
  * To be used with the ?after=[cursor] query parameter.
  */
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-internal data class TwitchPagination(val cursor: String = "")
+internal data class TwitchPagination(val cursor: String? = null)

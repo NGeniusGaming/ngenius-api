@@ -6,7 +6,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpRequest
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.util.UrlPathHelper.PATH_ATTRIBUTE
 import javax.servlet.http.HttpServletRequest

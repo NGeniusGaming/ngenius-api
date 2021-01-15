@@ -9,5 +9,5 @@ import org.springframework.boot.runApplication
 class NgeniusApiApplication
 
 fun main(args: Array<String>) {
-	runApplication<NgeniusApiApplication>(*args)
+    runApplication<NgeniusApiApplication>(*args)
 }

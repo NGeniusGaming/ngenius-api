@@ -1,7 +1,8 @@
 package com.ngenenius.api.service.twitch
 
 import com.github.benmanes.caffeine.cache.Cache
-import com.ngenenius.api.config.*
+import com.ngenenius.api.config.Channels
+import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
@@ -43,7 +44,13 @@ class TwitchStreamsService(
         val stream = twitchStreamerProvider.streamFn()
         if (stream.channels.size > 100) {
             // if we start seeing this log, we need to re-vamp the call to twitch to chunk requests by 100 and merge to a complete response.
-            logger.warn("Channels list for of $stream is greater than 100. Only the first 100 are returned per call. The following channels will be dropped: ${stream.channels.drop(100)}")
+            logger.warn(
+                "Channels list for of $stream is greater than 100. Only the first 100 are returned per call. The following channels will be dropped: ${
+                    stream.channels.drop(
+                        100
+                    )
+                }"
+            )
         }
         return internalStreamDetails(stream)
     }
@@ -64,7 +71,7 @@ class TwitchStreamsService(
      */
     private fun twitchStreamsRequest(channels: List<String>): Map<String, StreamDetails> {
         val streamDetails = twitchWebClient.get()
-            .uri("/helix/streams?${channels.toQueryParams()}&first=${channels.size}")
+            .uri("/helix/streams?${channels.toQueryParams("user_login")}&first=${channels.size}")
             .retrieve()
             .onStatus(
                 { !it.is2xxSuccessful },

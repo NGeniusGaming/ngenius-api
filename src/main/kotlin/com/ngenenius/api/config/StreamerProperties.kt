@@ -2,7 +2,6 @@ package com.ngenenius.api.config
 
 import com.ngenenius.api.model.platform.StreamingProvider
 import com.ngenenius.api.model.platform.StreamingTab
-import com.ngenenius.api.service.twitch.toQueryParams
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
@@ -10,7 +9,7 @@ interface StreamerProvider {
     fun channelNames(platform: StreamingProvider, tab: StreamingTab): Channels
 }
 
-interface TwitchStreamerProvider: StreamerProvider {
+interface TwitchStreamerProvider : StreamerProvider {
 
     fun twitchStreamersFor(tab: StreamingTab): Channels {
         return channelNames(StreamingProvider.TWITCH, tab)
@@ -19,13 +18,13 @@ interface TwitchStreamerProvider: StreamerProvider {
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "ngenius.streamer")
-data class StreamerProperties(val channels: List<ChannelProperties>): StreamerProvider, TwitchStreamerProvider {
+data class StreamerProperties(val channels: List<ChannelProperties>) : StreamerProvider, TwitchStreamerProvider {
 
     override fun channelNames(platform: StreamingProvider, tab: StreamingTab) =
         Channels(
-            channels.filter{it.platform == platform}
-                .filter{it.tabs.contains(tab)}
-                .map{ it.id }
+            channels.filter { it.platform == platform }
+                .filter { it.tabs.contains(tab) }
+                .map { it.id }
         )
 }
 
