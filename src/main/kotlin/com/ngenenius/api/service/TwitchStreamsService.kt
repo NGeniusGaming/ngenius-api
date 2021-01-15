@@ -14,7 +14,7 @@ import java.time.Duration
 private val logger = KotlinLogging.logger {  }
 
 @Component
-class TwitchService(
+class TwitchStreamsService(
     private val twitchWebClient: WebClient,
     private val twitch: TwitchProperties,
     private val twitchStreamerProvider: TwitchStreamerProvider,

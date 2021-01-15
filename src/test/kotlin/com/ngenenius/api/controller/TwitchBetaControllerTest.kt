@@ -1,6 +1,6 @@
 package com.ngenenius.api.controller
 
-import com.ngenenius.api.service.TwitchService
+import com.ngenenius.api.service.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class TwitchBetaControllerTest {
 
-    private val twitchService = mock<TwitchService>()
+    private val twitchService = mock<TwitchStreamsService>()
     private val controller = TwitchBetaController(twitchService)
 
     @Test

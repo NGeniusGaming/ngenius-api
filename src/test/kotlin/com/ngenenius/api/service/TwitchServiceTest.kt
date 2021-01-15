@@ -44,7 +44,7 @@ internal class TwitchServiceTest {
 
     private val cache = Caffeine.newBuilder().build<String, StreamDetailsResponse>()
 
-    private lateinit var service: TwitchService
+    private lateinit var streamsService: TwitchStreamsService
 
     @BeforeEach
     fun setup() {
@@ -57,7 +57,7 @@ internal class TwitchServiceTest {
         // create beans / class under test
         webClient = WebClient.create(url)
 
-        service = TwitchService(webClient, twitch, twitchStreamerProvider, cache)
+        streamsService = TwitchStreamsService(webClient, twitch, twitchStreamerProvider, cache)
 
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
@@ -94,7 +94,7 @@ internal class TwitchServiceTest {
         )
 
         // a cheeky one-liner to extract the function from parameterized object and run it on our service.
-        val result = methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() }
+        val result = methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         val objectMapper = jacksonObjectMapper()
         val validResponseObject = objectMapper.readValue<StreamDetailsResponse>(validResponse)
@@ -111,7 +111,7 @@ internal class TwitchServiceTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() }
+        methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         val request = twitchApiMockServer.takeRequest(5L, TimeUnit.SECONDS)
 
@@ -128,7 +128,7 @@ internal class TwitchServiceTest {
         )
 
         // call multiple times quick.
-        (0..10).map { methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() } }
+        (0..10).map { methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() } }
 
         assertThat(twitchApiMockServer.requestCount).isEqualTo(1)
     }
@@ -142,7 +142,7 @@ internal class TwitchServiceTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() }
+        methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         val request = twitchApiMockServer.takeRequest(5L, TimeUnit.SECONDS)
 
@@ -160,7 +160,7 @@ internal class TwitchServiceTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() }
+        methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         assertThat(cache.asMap()).hasSize(1)
     }
@@ -172,7 +172,7 @@ internal class TwitchServiceTest {
             MockResponse().setResponseCode(404)
         )
 
-        assertThatThrownBy { methodUnderTest.fn.let{ theMethodUnderTest -> service.theMethodUnderTest() } }
+        assertThatThrownBy { methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() } }
             .isExactlyInstanceOf(IllegalStateException::class.java)
             .hasMessage("Twitch API Received Status Code: 404 NOT_FOUND - Try again later.")
 
@@ -189,7 +189,7 @@ internal class TwitchServiceTest {
         )
     }
 
-    internal class MethodUnderTest(private val name: String, val fn: TwitchService.() -> StreamDetailsResponse) {
+    internal class MethodUnderTest(private val name: String, val fn: TwitchStreamsService.() -> StreamDetailsResponse) {
         override fun toString() = name
     }
 
