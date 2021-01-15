@@ -17,7 +17,6 @@ private val logger = KotlinLogging.logger {  }
 @Component
 class TwitchStreamsService(
     private val twitchWebClient: WebClient,
-    private val twitch: TwitchProperties,
     private val twitchStreamerProvider: TwitchStreamerProvider,
     private val twitchStreamsCache: Cache<String, TwitchResponse<StreamDetails>>
 ) {
@@ -66,7 +65,6 @@ class TwitchStreamsService(
         logger.debug("cache miss for [{}], retrieving details from Twitch.", key)
         return twitchWebClient.get()
             .uri("/helix/streams?${stream.channelsAsQueryParams()}&first=${stream.channels.size}")
-            .header("Client-Id", twitch.auth.clientId)
             .retrieve()
             .onStatus({!it.is2xxSuccessful}, { Mono.just(IllegalStateException("Twitch API Received Status Code: ${it.statusCode()} - Try again later.")) })
             .bodyToMono<TwitchResponse<StreamDetails>>()

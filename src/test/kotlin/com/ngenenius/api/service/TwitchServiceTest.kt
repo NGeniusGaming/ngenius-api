@@ -37,12 +37,8 @@ internal class TwitchServiceTest {
 
     private val twitchStreamerProvider=  mock<TwitchStreamerProvider>()
 
-    private val auth = mock<TwitchAuthProperties>()
-
     private val teamView = mock<Channels>()
     private val tournament = mock<Channels>()
-
-    private val twitch = TwitchProperties(auth)
 
     private val cache = Caffeine.newBuilder().build<String, TwitchResponse<StreamDetails>>()
 
@@ -59,7 +55,7 @@ internal class TwitchServiceTest {
         // create beans / class under test
         webClient = WebClient.create(url)
 
-        streamsService = TwitchStreamsService(webClient, twitch, twitchStreamerProvider, cache)
+        streamsService = TwitchStreamsService(webClient, twitchStreamerProvider, cache)
 
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
         whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
@@ -70,15 +66,10 @@ internal class TwitchServiceTest {
 
         whenever(tournament.channels).thenReturn(listOf("tourney1", "tourney2"))
         whenever(tournament.channelsAsQueryParams()).thenReturn("user_login=tourney1&user_login=tourney2")
-
-        whenever(auth.clientId).thenReturn("my-client-id")
     }
 
     @AfterEach
     fun teardown() {
-        // we should _never_ access the client secret in this service.
-        verify(auth, times(0)).clientSecret
-
         // clear the cache
         cache.invalidateAll()
 
@@ -102,22 +93,6 @@ internal class TwitchServiceTest {
         val validResponseObject = objectMapper.readValue<TwitchResponse<StreamDetails>>(validResponse)
 
         assertThat(result).isEqualTo(validResponseObject)
-    }
-
-    @MethodSource("publicMethods")
-    @ParameterizedTest
-    fun `Should include the client id when querying twitch`(methodUnderTest: MethodUnderTest) {
-        twitchApiMockServer.enqueue(
-            MockResponse().setResponseCode(200)
-                .setBody(validResponse)
-                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        )
-
-        methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
-
-        val request = twitchApiMockServer.takeRequest(5L, TimeUnit.SECONDS)
-
-        assertThat(request.headers.toMultimap()).containsEntry("Client-Id", listOf("my-client-id"))
     }
 
     @MethodSource("publicMethods")

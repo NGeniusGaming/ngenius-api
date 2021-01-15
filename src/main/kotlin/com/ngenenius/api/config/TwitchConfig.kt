@@ -61,11 +61,15 @@ class TwitchConfig {
      * made by this web client.
      */
     @Bean
-    fun twitchWebClient(twitchAuthorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+    fun twitchWebClient(
+        twitchAuthorizedClientManager: OAuth2AuthorizedClientManager,
+        twitch: TwitchProperties
+    ): WebClient {
         val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(twitchAuthorizedClientManager)
         oauth2Client.setDefaultClientRegistrationId("twitch")
         return WebClient.builder()
             .apply(oauth2Client.oauth2Configuration())
+            .defaultHeader("Client-Id", twitch.auth.clientId)
             // the domain of the Twitch API
             .baseUrl("https://api.twitch.tv")
             .build()
