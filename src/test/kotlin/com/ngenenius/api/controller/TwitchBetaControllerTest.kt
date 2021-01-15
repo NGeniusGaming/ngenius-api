@@ -1,6 +1,6 @@
 package com.ngenenius.api.controller
 
-import com.ngenenius.api.service.TwitchStreamsService
+import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify

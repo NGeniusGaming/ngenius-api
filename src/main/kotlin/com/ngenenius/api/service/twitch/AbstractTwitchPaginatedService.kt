@@ -1,4 +1,4 @@
-package com.ngenenius.api.service
+package com.ngenenius.api.service.twitch
 
 /**
  * The Twitch API has a unique take on pagination, and therefore this should

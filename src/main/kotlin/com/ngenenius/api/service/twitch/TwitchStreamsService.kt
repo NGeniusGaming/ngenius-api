@@ -1,4 +1,4 @@
-package com.ngenenius.api.service
+package com.ngenenius.api.service.twitch
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.ngenenius.api.config.*

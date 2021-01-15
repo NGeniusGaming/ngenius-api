@@ -10,6 +10,7 @@ import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
+import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer

@@ -1,4 +1,4 @@
-package com.ngenenius.api.service
+package com.ngenenius.api.service.twitch
 
 /**
  * The [TwitchDataService] is responsible for orchestrating data from the individual
