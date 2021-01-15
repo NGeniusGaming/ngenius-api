@@ -8,7 +8,8 @@ import com.ngenenius.api.config.TwitchAuthProperties
 import com.ngenenius.api.config.TwitchProperties
 import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
-import com.ngenenius.api.model.twitch.StreamDetailsResponse
+import com.ngenenius.api.model.twitch.StreamDetails
+import com.ngenenius.api.model.twitch.TwitchResponse
 import com.nhaarman.mockitokotlin2.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -42,7 +43,7 @@ internal class TwitchServiceTest {
 
     private val twitch = TwitchProperties(auth)
 
-    private val cache = Caffeine.newBuilder().build<String, StreamDetailsResponse>()
+    private val cache = Caffeine.newBuilder().build<String, TwitchResponse<StreamDetails>>()
 
     private lateinit var streamsService: TwitchStreamsService
 
@@ -97,7 +98,7 @@ internal class TwitchServiceTest {
         val result = methodUnderTest.fn.let{ theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
         val objectMapper = jacksonObjectMapper()
-        val validResponseObject = objectMapper.readValue<StreamDetailsResponse>(validResponse)
+        val validResponseObject = objectMapper.readValue<TwitchResponse<StreamDetails>>(validResponse)
 
         assertThat(result).isEqualTo(validResponseObject)
     }
@@ -189,7 +190,7 @@ internal class TwitchServiceTest {
         )
     }
 
-    internal class MethodUnderTest(private val name: String, val fn: TwitchStreamsService.() -> StreamDetailsResponse) {
+    internal class MethodUnderTest(private val name: String, val fn: TwitchStreamsService.() -> TwitchResponse<StreamDetails>) {
         override fun toString() = name
     }
 

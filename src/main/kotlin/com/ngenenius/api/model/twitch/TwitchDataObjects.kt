@@ -1,13 +1,11 @@
+/**
+ * A collection of objects that are returned as the 'data' parameter
+ * in a [TwitchResponse] from the Twitch public API.
+ */
 package com.ngenenius.api.model.twitch
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-data class StreamDetailsResponse(
-    val data: List<StreamDetails>,
-    val pagination: TwitchPagination
-)
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class StreamDetails(
@@ -23,6 +21,3 @@ data class StreamDetails(
     val thumbnailUrl: String,
     val tagIds: List<String> = listOf()
 )
-
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-data class TwitchPagination(val cursor: String = "")

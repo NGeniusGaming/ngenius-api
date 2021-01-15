@@ -2,7 +2,8 @@ package com.ngenenius.api.config
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.ngenenius.api.model.twitch.StreamDetailsResponse
+import com.ngenenius.api.model.twitch.StreamDetails
+import com.ngenenius.api.model.twitch.TwitchResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
@@ -74,7 +75,7 @@ class TwitchConfig {
      * meaning at most we will query twitch once-per-minute, per-dataset, (per instance)
      */
     @Bean
-    fun twitchResponseCache(): Cache<String, StreamDetailsResponse> {
+    fun twitchStreamsCache(): Cache<String, TwitchResponse<StreamDetails>> {
         return Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(60L))
             .build()
