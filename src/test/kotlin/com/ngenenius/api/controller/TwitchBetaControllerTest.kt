@@ -1,16 +1,16 @@
 package com.ngenenius.api.controller
 
-import com.ngenenius.api.service.TwitchService
+import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.jupiter.api.Test
 
-internal class TwitchControllerTest {
+internal class TwitchBetaControllerTest {
 
-    private val twitchService = mock<TwitchService>()
-    private val controller = TwitchController(twitchService)
+    private val twitchService = mock<TwitchStreamsService>()
+    private val controller = TwitchBetaController(twitchService, mock())
 
     @Test
     fun `Should use the twitch service for team view details when getting team view`() {

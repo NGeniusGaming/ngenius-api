@@ -6,33 +6,37 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
 interface StreamerProvider {
-    fun channelNames(platform: StreamingProvider, tab: StreamingTab): Channels
+    fun identifiers(platform: StreamingProvider, tab: StreamingTab): Collection<TwitchIdentifier>
 }
 
-interface TwitchStreamerProvider: StreamerProvider {
+interface TwitchStreamerProvider : StreamerProvider {
 
-    fun twitchStreamersFor(tab: StreamingTab): Channels {
-        return channelNames(StreamingProvider.TWITCH, tab)
+    fun twitchIdentifiers(tab: StreamingTab): Collection<TwitchIdentifier> {
+        return identifiers(StreamingProvider.TWITCH, tab)
     }
 }
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "ngenius.streamer")
-data class StreamerProperties(val channels: List<ChannelProperties>): StreamerProvider, TwitchStreamerProvider {
+data class StreamerProperties(val channels: List<ChannelProperties>) : StreamerProvider, TwitchStreamerProvider {
 
-    override fun channelNames(platform: StreamingProvider, tab: StreamingTab) =
-        Channels(
-            channels.filter{it.platform == platform}
-                .filter{it.tabs.contains(tab)}
-                .map{ it.id }
-        )
+    override fun identifiers(platform: StreamingProvider, tab: StreamingTab) =
+        channels.filter { it.platform == platform }
+            .filter { it.tabs.contains(tab) }
+            .map { it.twitchIdentifier }
+            .toSet()
 }
 
 data class ChannelProperties(
     /**
-     * The name of the channel / common identifier.
+     * The actual id for this Twitch channel
      */
-    val id: String,
+    val id: String = "",
+    /**
+     * The _case sensitive_ display name of the channel.
+     * If the case is incorrect with this, the Twitch API returns nothing.
+     */
+    val displayName: String = "",
     /**
      * The platform this channel lives on.
      */
@@ -41,11 +45,34 @@ data class ChannelProperties(
      * The tab(s) to show this channel on.
      */
     val tabs: List<StreamingTab>
-)
+) {
+    val twitchIdentifier = TwitchIdentifier(id, displayName)
+}
 
-data class Channels(val channels: List<String>) {
+data class TwitchIdentifier(val id: String = "", val displayName: String = "") {
+
+    private val internalKey = asQueryParameter("key_")
+
+    fun asQueryParameter(prefix: String = ""): String {
+        val param = when {
+            displayName.isNotBlank() -> "login=$displayName"
+            id.isNotBlank() -> "id=$id" // TODO: after config migration, this should be higher priority.
+            else -> throw IllegalStateException("Both the id and display-name for a Twitch Identifier is blank!")
+        }
+
+        return "$prefix$param"
+    }
+
     /**
-     * Helper function to convert a list of channels to the query params string the Twitch API expects.
+     * Rely on the internal key to determine equality
      */
-    fun channelsAsQueryParams() = channels.joinToString("&") { "user_login=$it" }
+    override fun equals(other: Any?): Boolean {
+        return (other as? TwitchIdentifier)?.internalKey?.equals(internalKey) ?: false
+    }
+
+    /**
+     * Rely on the internal key to compute the hashcode.
+     */
+    override fun hashCode() = internalKey.hashCode()
+
 }

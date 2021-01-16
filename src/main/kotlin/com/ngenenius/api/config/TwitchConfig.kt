@@ -1,18 +1,26 @@
 package com.ngenenius.api.config
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.ngenenius.api.model.twitch.StreamDetailsResponse
+import com.ngenenius.api.model.twitch.StreamDetails
+import com.ngenenius.api.model.twitch.UserDetails
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
-import org.springframework.web.reactive.function.client.WebClient
-
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
+import org.springframework.web.reactive.function.client.ExchangeStrategies
+import org.springframework.web.reactive.function.client.WebClient
 import java.time.Duration
 
 @Configuration
@@ -40,6 +48,13 @@ class TwitchConfig {
         return twitchAuthorizedClientManager
     }
 
+    @Bean
+    fun twitchObjectMapper(): ObjectMapper {
+        return jacksonObjectMapper().apply {
+            this.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+        }
+    }
+
     /**
      * Create a web client for the Twitch API
      *
@@ -59,24 +74,54 @@ class TwitchConfig {
      * made by this web client.
      */
     @Bean
-    fun twitchWebClient(twitchAuthorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+    fun twitchWebClient(
+        twitchAuthorizedClientManager: OAuth2AuthorizedClientManager,
+        twitch: TwitchProperties,
+        @Qualifier("twitchObjectMapper")
+        twitchObjectMapper: ObjectMapper
+    ): WebClient {
         val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(twitchAuthorizedClientManager)
         oauth2Client.setDefaultClientRegistrationId("twitch")
+
+        // use a customized exchange strategy with our customized object mapper.
+        val strategies = ExchangeStrategies
+            .builder()
+            .codecs {
+                it.defaultCodecs()
+                    .jackson2JsonEncoder(Jackson2JsonEncoder(twitchObjectMapper, MediaType.APPLICATION_JSON))
+                it.defaultCodecs()
+                    .jackson2JsonDecoder(Jackson2JsonDecoder(twitchObjectMapper, MediaType.APPLICATION_JSON))
+            }.build()
+
         return WebClient.builder()
             .apply(oauth2Client.oauth2Configuration())
+            .exchangeStrategies(strategies)
+            .defaultHeader("Client-Id", twitch.auth.clientId)
             // the domain of the Twitch API
             .baseUrl("https://api.twitch.tv")
             .build()
     }
 
     /**
-     * A very small caffeine cache that expires items every 60 seconds,
+     * A caffeine cache that expires items every 60 seconds,
      * meaning at most we will query twitch once-per-minute, per-dataset, (per instance)
      */
     @Bean
-    fun twitchResponseCache(): Cache<String, StreamDetailsResponse> {
+    fun twitchStreamsCache(): Cache<TwitchIdentifier, StreamDetails> {
         return Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(60L))
+            .build()
+    }
+
+    /**
+     * This caffeine cache expires items every 5 minutes for UserDetails,
+     * which update less frequently nor demand as real-time of stats as the
+     * details of a potential live stream.
+     */
+    @Bean
+    fun twitchUsersCache(): Cache<TwitchIdentifier, UserDetails> {
+        return Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(5L))
             .build()
     }
 }
