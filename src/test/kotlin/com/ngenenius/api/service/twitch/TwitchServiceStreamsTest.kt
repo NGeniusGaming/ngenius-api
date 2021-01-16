@@ -1,29 +1,26 @@
-package com.ngenenius.api.service
+package com.ngenenius.api.service.twitch
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.ngenenius.api.config.Channels
 import com.ngenenius.api.config.TwitchIdentifier
 import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
+import com.ngenenius.api.service.twitch.AbstractTwitchServiceTest
 import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.web.reactive.function.client.WebClient
 import java.util.concurrent.TimeUnit
 
 /**
@@ -32,10 +29,8 @@ import java.util.concurrent.TimeUnit
 private const val validResponse =
     "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"channel1\",\"game_id\":\"1\",\"game_name\": \"Destiny\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"channel2\",\"game_id\":\"2\",\"game_name\": \"Halo\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
 
-internal class TwitchServiceTest {
-
-    private lateinit var twitchApiMockServer: MockWebServer
-    private lateinit var webClient: WebClient
+// TODO: this test also tests caching, need to abstract that out to it's own test.
+internal class TwitchStreamsServiceTest: AbstractTwitchServiceTest<StreamDetails>() {
 
     private val twitchStreamerProvider = mock<TwitchStreamerProvider>()
 
@@ -43,34 +38,16 @@ internal class TwitchServiceTest {
     private val teamView = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
     private val tournament = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
 
-    private val cache = Caffeine.newBuilder().build<TwitchIdentifier, StreamDetails>()
+    override val cache = Caffeine.newBuilder().build<TwitchIdentifier, StreamDetails>()
 
     private lateinit var streamsService: TwitchStreamsService
 
     @BeforeEach
     fun setup() {
-        // clear the cache
-        cache.invalidateAll()
-
-        // start a mock http server
-        twitchApiMockServer = MockWebServer()
-        val url = twitchApiMockServer.url("/").toString()
-        // create beans / class under test
-        webClient = WebClient.create(url)
-
         streamsService = TwitchStreamsService(webClient, twitchStreamerProvider, cache)
 
         whenever(twitchStreamerProvider.twitchIdentifiers(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
         whenever(twitchStreamerProvider.twitchIdentifiers(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
-    }
-
-    @AfterEach
-    fun teardown() {
-        // clear the cache
-        cache.invalidateAll()
-
-        // stop the server
-        twitchApiMockServer.shutdown()
     }
 
     @MethodSource("publicMethods")

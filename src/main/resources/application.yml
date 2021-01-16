@@ -1,3 +1,5 @@
+logging.level:
+
 spring:
   security:
     oauth2:

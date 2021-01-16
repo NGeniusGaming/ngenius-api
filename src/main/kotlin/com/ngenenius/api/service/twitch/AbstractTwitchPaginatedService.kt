@@ -96,8 +96,6 @@ abstract class AbstractTwitchPaginatedService<VALUE> (
 
         val keyed = values.map { identifierTransformer(it) to it }.toMap()
 
-        logger.trace { "Received this response from 'GET: $rootApiUri'\n\n$keyed" }
-
         if (expectPerfectCaching) {
             checkImperfectCacheUsage(keyed.keys, identifiers)
         }

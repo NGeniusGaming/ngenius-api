@@ -6,17 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 
 interface StreamerProvider {
-    @Deprecated("replace with identifiers()")
-    fun channelNames(platform: StreamingProvider, tab: StreamingTab): Channels
     fun identifiers(platform: StreamingProvider, tab: StreamingTab): Collection<TwitchIdentifier>
 }
 
 interface TwitchStreamerProvider : StreamerProvider {
-
-    @Deprecated("replace with identifiers()")
-    fun twitchStreamersFor(tab: StreamingTab): Channels {
-        return channelNames(StreamingProvider.TWITCH, tab)
-    }
 
     fun twitchIdentifiers(tab: StreamingTab): Collection<TwitchIdentifier> {
         return identifiers(StreamingProvider.TWITCH, tab)
@@ -26,13 +19,6 @@ interface TwitchStreamerProvider : StreamerProvider {
 @ConstructorBinding
 @ConfigurationProperties(prefix = "ngenius.streamer")
 data class StreamerProperties(val channels: List<ChannelProperties>) : StreamerProvider, TwitchStreamerProvider {
-
-    override fun channelNames(platform: StreamingProvider, tab: StreamingTab) =
-        Channels(
-            channels.filter { it.platform == platform }
-                .filter { it.tabs.contains(tab) }
-                .map { it.id }
-        )
 
     override fun identifiers(platform: StreamingProvider, tab: StreamingTab) =
         channels.filter{ it.platform == platform }
@@ -90,6 +76,3 @@ data class TwitchIdentifier(val id: String ="", val displayName: String ="") {
     override fun hashCode() = internalKey.hashCode()
 
 }
-
-@Deprecated("Not descriptive enough for what we're trying to do.")
-data class Channels(val channels: List<String>)

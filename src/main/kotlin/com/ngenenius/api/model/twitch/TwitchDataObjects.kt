@@ -59,5 +59,5 @@ data class UserDetails(
     val profileImageUrl: String,
     val type: UserType,
     val viewCount: Long,
-    val createdAt: String
+    val createdAt: String?
 ): Base()
