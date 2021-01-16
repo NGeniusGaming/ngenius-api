@@ -33,98 +33,87 @@ ngenius:
   streamer:
     channels:
       - id: NGeniusGaming
+        display-name: NGeniusGaming
         platform: twitch
         tabs:
           - team-view
       - id: CD_Mangaka
+        display-name: CD_Mangaka
         platform: twitch
         tabs:
           - team-view
       - id: Dashr40
+        display-name: Dashr40
         platform: twitch
         tabs:
           - team-view
       - id: ICrazyJI
+        display-name: ICrazyJI
         platform: twitch
         tabs:
           - team-view
       - id: SetTopVox
+        display-name: SetTopVox
         platform: twitch
         tabs:
           - team-view
-      - id: ngen_duo
+      - id: FirstOfMankind
+        display-name: FirstOfMankind
         platform: twitch
         tabs:
           - team-view
-      - id: ngen_zedd
-        platform: twitch
-        tabs:
-          - team-view
-      - id: KasumiSSJ
-        platform: twitch
-        tabs:
-          - team-view
-      - id: firstofmankind
-        platform: twitch
-        tabs:
-          - team-view
-      - id: yiinja
-        platform: twitch
-        tabs:
-          - team-view
-      - id: ngenwreck
-        platform: twitch
-        tabs:
-          - team-view
-      - id: tappanc
+      - id: YiinJa
+        display-name: YiinJa
         platform: twitch
         tabs:
           - team-view
       - id: Natejesty
+        display-name: Natejesty
         platform: twitch
         tabs:
           - team-view
-      - id: ngen_floridaman
-        platform: twitch
-        tabs:
-          - team-view
-      - id: RoyalHeartv2
-        platform: twitch
-        tabs:
-          - team-view
-      - id: Sol_xvii
+      - id: NGEN_FloridaMan
+        display-name: NGEN_FloridaMan
         platform: twitch
         tabs:
           - team-view
       - id: QueenHollow
+        display-name: QueenHollow
         platform: twitch
         tabs:
           - team-view
       - id: iCerby
+        display-name: iCerby
         platform: twitch
         tabs:
           - team-view
-      - id: Minimattt
+      - id: MiniMattt
+        display-name: MiniMattt
         platform: twitch
         tabs:
           - team-view
-      - id: adanimo
+      - id: Adanimo
+        display-name: Adanimo
         platform: twitch
         tabs:
           - team-view
       - id: AkihabaraArcade
+        display-name: AkihabaraArcade
         platform: twitch
         tabs:
           - tournament
       - id: milehighfightnight
+        display-name: milehighfightnight
         platform: twitch
         tabs:
           - tournament
       - id: onibakuman
+        display-name: onibakuman
         platform: twitch
         tabs:
           - tournament
       - id: wellbornsteak
+        display-name: wellbornsteak
         platform: twitch
         tabs:
           - tournament

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.ngenenius.api.config.Channels
+import com.ngenenius.api.config.TwitchIdentifier
 import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
@@ -39,10 +40,10 @@ internal class TwitchServiceTest {
     private val twitchStreamerProvider = mock<TwitchStreamerProvider>()
 
     // keys must match data in the valid response object usernames.
-    private val teamView = Channels(listOf("channel1", "channel2"))
-    private val tournament = Channels(listOf("channel1", "channel2"))
+    private val teamView = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
+    private val tournament = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
 
-    private val cache = Caffeine.newBuilder().build<String, StreamDetails>()
+    private val cache = Caffeine.newBuilder().build<TwitchIdentifier, StreamDetails>()
 
     private lateinit var streamsService: TwitchStreamsService
 
@@ -59,8 +60,8 @@ internal class TwitchServiceTest {
 
         streamsService = TwitchStreamsService(webClient, twitchStreamerProvider, cache)
 
-        whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
-        whenever(twitchStreamerProvider.twitchStreamersFor(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
+        whenever(twitchStreamerProvider.twitchIdentifiers(eq(StreamingTab.TEAM_VIEW))).thenReturn(teamView)
+        whenever(twitchStreamerProvider.twitchIdentifiers(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
     }
 
     @AfterEach
@@ -135,7 +136,7 @@ internal class TwitchServiceTest {
 
         methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
-        assertThat(cache.asMap()).hasSize(2).containsKeys("channel1", "channel2")
+        assertThat(cache.asMap()).hasSize(2).containsKeys(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
     }
 
     @MethodSource("publicMethods")

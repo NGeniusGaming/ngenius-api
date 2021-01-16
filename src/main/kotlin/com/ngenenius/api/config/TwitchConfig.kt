@@ -107,7 +107,7 @@ class TwitchConfig {
      * meaning at most we will query twitch once-per-minute, per-dataset, (per instance)
      */
     @Bean
-    fun twitchStreamsCache(): Cache<String, StreamDetails> {
+    fun twitchStreamsCache(): Cache<TwitchIdentifier, StreamDetails> {
         return Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofSeconds(60L))
             .build()
@@ -119,7 +119,7 @@ class TwitchConfig {
      * details of a potential live stream.
      */
     @Bean
-    fun twitchUsersCache(): Cache<String, UserDetails> {
+    fun twitchUsersCache(): Cache<TwitchIdentifier, UserDetails> {
         return Caffeine.newBuilder()
             .expireAfterWrite(Duration.ofMinutes(5L))
             .build()
