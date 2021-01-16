@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
  * A sample, valid streams response containing 2 stream details.
  */
 private const val validResponse =
-    "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"channel1\",\"game_id\":\"1\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"channel2\",\"game_id\":\"2\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
+    "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"channel1\",\"game_id\":\"1\",\"game_name\": \"Destiny\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"channel2\",\"game_id\":\"2\",\"game_name\": \"Halo\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
 
 internal class TwitchServiceTest {
 

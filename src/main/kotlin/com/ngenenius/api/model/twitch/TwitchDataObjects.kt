@@ -16,6 +16,7 @@ data class StreamDetails(
     val userId: String,
     val userName: String,
     val gameId: String,
+    val gameName: String,
     val type: String,
     val title: String,
     val viewerCount: Int,
