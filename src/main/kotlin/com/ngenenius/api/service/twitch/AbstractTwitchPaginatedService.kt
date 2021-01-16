@@ -14,6 +14,10 @@ import java.time.Duration
 private val logger = KotlinLogging.logger {  }
 
 /**
+ * This abstract base class will suffice for GET requests to the Twitch API.
+ *
+ * If the API requires a different request method, this abstract class is probably not for you.
+ *
  * The Twitch API has a unique take on pagination, and therefore this should
  * be dealt with in a common approach.
  *

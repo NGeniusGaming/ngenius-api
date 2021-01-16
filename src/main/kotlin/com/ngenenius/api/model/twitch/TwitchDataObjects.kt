@@ -4,8 +4,25 @@
  */
 package com.ngenenius.api.model.twitch
 
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {  }
+
+open class Base {
+
+    /**
+     * When there is an unknown property on a data object, rather than failing miserably,
+     * log about it. Tell us the key, the value, and the class name it occurred on.
+     */
+    @Suppress("unused")
+    @JsonAnySetter
+    fun warnUnknownProperty(key: String, value: Any?) {
+        logger.warn{ "Unknown property key [$key] with value [$value] detected on [${this.javaClass.simpleName}]. " }
+    }
+}
 
 /**
  * The data object for [the Get Streams API](https://dev.twitch.tv/docs/api/reference#get-streams)
@@ -24,7 +41,7 @@ data class StreamDetails(
     val language: String,
     val thumbnailUrl: String,
     val tagIds: Collection<String> = listOf()
-)
+): Base()
 
 /**
  * The data object for [the Get Users API](https://dev.twitch.tv/docs/api/reference#get-users)
@@ -43,4 +60,4 @@ data class UserDetails(
     val type: UserType,
     val viewCount: Long,
     val createdAt: String
-)
+): Base()
