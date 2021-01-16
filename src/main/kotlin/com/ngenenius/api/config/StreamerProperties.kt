@@ -21,9 +21,9 @@ interface TwitchStreamerProvider : StreamerProvider {
 data class StreamerProperties(val channels: List<ChannelProperties>) : StreamerProvider, TwitchStreamerProvider {
 
     override fun identifiers(platform: StreamingProvider, tab: StreamingTab) =
-        channels.filter{ it.platform == platform }
+        channels.filter { it.platform == platform }
             .filter { it.tabs.contains(tab) }
-            .map{ it.twitchIdentifier }
+            .map { it.twitchIdentifier }
             .toSet()
 }
 
@@ -49,7 +49,7 @@ data class ChannelProperties(
     val twitchIdentifier = TwitchIdentifier(id, displayName)
 }
 
-data class TwitchIdentifier(val id: String ="", val displayName: String ="") {
+data class TwitchIdentifier(val id: String = "", val displayName: String = "") {
 
     private val internalKey = asQueryParameter("key_")
 

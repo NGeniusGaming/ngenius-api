@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 enum class BroadcasterType {
     @JsonProperty("partner")
     PARTNER,
+
     @JsonProperty("affiliate")
     AFFILIATE,
 
@@ -25,8 +26,10 @@ enum class BroadcasterType {
 enum class UserType {
     @JsonProperty("staff")
     STAFF,
+
     @JsonProperty("admin")
     ADMIN,
+
     @JsonProperty("global_mod")
     GLOBAL_MOD,
 

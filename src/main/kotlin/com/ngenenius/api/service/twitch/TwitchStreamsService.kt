@@ -15,7 +15,7 @@ class TwitchStreamsService(
     twitchWebClient: WebClient,
     twitchStreamerProvider: TwitchStreamerProvider,
     twitchStreamsCache: Cache<TwitchIdentifier, StreamDetails>
-): AbstractTwitchPaginatedService<StreamDetails>(
+) : AbstractTwitchPaginatedService<StreamDetails>(
     twitchWebClient,
     twitchStreamerProvider,
     twitchStreamsCache,
@@ -23,9 +23,11 @@ class TwitchStreamsService(
     "user_"
 ), CacheUsage by PreferRealtime {
 
-    override val identifierTransformer: (StreamDetails) -> TwitchIdentifier = { TwitchIdentifier(it.userId, it.userName) }
+    override val identifierTransformer: (StreamDetails) -> TwitchIdentifier =
+        { TwitchIdentifier(it.userId, it.userName) }
 
-    override val valueTypeReference: ParameterizedTypeReference<TwitchResponse<StreamDetails>> = object: ParameterizedTypeReference<TwitchResponse<StreamDetails>>(){}
+    override val valueTypeReference: ParameterizedTypeReference<TwitchResponse<StreamDetails>> =
+        object : ParameterizedTypeReference<TwitchResponse<StreamDetails>>() {}
 
     /**
      * Retrieve [TwitchResponse<StreamDetails>] for the team view page.

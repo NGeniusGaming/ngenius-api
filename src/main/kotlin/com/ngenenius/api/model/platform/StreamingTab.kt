@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 enum class StreamingTab {
     @JsonProperty("team-view")
     TEAM_VIEW,
+
     @JsonProperty("tournament")
     TOURNAMENT
 }

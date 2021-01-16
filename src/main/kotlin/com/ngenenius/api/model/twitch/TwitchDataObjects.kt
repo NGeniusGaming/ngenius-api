@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import mu.KotlinLogging
 
-private val logger = KotlinLogging.logger {  }
+private val logger = KotlinLogging.logger { }
 
 open class Base {
 
@@ -20,7 +20,7 @@ open class Base {
     @Suppress("unused")
     @JsonAnySetter
     fun warnUnknownProperty(key: String, value: Any?) {
-        logger.warn{ "Unknown property key [$key] with value [$value] detected on [${this.javaClass.simpleName}]. " }
+        logger.warn { "Unknown property key [$key] with value [$value] detected on [${this.javaClass.simpleName}]. " }
     }
 }
 
@@ -41,7 +41,7 @@ data class StreamDetails(
     val language: String,
     val thumbnailUrl: String,
     val tagIds: Collection<String> = listOf()
-): Base()
+) : Base()
 
 /**
  * The data object for [the Get Users API](https://dev.twitch.tv/docs/api/reference#get-users)
@@ -60,4 +60,4 @@ data class UserDetails(
     val type: UserType,
     val viewCount: Long,
     val createdAt: String?
-): Base()
+) : Base()

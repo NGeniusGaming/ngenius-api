@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient
 /**
  * A common base class to deal with the complications of the mock web server and cache.
  */
-abstract class AbstractTwitchServiceTest<VALUE> () {
+abstract class AbstractTwitchServiceTest<VALUE>() {
 
     protected lateinit var twitchApiMockServer: MockWebServer
     protected lateinit var webClient: WebClient

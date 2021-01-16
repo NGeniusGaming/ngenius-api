@@ -8,8 +8,6 @@ import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
-import com.ngenenius.api.service.twitch.AbstractTwitchServiceTest
-import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -30,13 +28,15 @@ private const val validResponse =
     "{\"data\":[{\"id\":\"1\",\"user_id\":\"1\",\"user_name\":\"channel1\",\"game_id\":\"1\",\"game_name\": \"Destiny\",\"type\":\"live\",\"title\":\"FirstAwesomeStream\",\"viewer_count\":21,\"started_at\":\"2021-01-10T06:29:08Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture1.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]},{\"id\":\"2\",\"user_id\":\"2\",\"user_name\":\"channel2\",\"game_id\":\"2\",\"game_name\": \"Halo\",\"type\":\"live\",\"title\":\"SecondAwesomeStream\",\"viewer_count\":3,\"started_at\":\"2021-01-10T04:34:30Z\",\"language\":\"en\",\"thumbnail_url\":\"https://some.picture2.jpg\",\"tag_ids\":[\"6ea6bca4-4712-4ab9-a906-e3336a9d8039\"]}],\"pagination\":{\"cursor\":\"\"}}"
 
 // TODO: this test also tests caching, need to abstract that out to it's own test.
-internal class TwitchStreamsServiceTest: AbstractTwitchServiceTest<StreamDetails>() {
+internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetails>() {
 
     private val twitchStreamerProvider = mock<TwitchStreamerProvider>()
 
     // keys must match data in the valid response object usernames.
-    private val teamView = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
-    private val tournament = listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
+    private val teamView =
+        listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
+    private val tournament =
+        listOf(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
 
     override val cache = Caffeine.newBuilder().build<TwitchIdentifier, StreamDetails>()
 
@@ -113,7 +113,8 @@ internal class TwitchStreamsServiceTest: AbstractTwitchServiceTest<StreamDetails
 
         methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
-        assertThat(cache.asMap()).hasSize(2).containsKeys(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
+        assertThat(cache.asMap()).hasSize(2)
+            .containsKeys(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
     }
 
     @MethodSource("publicMethods")

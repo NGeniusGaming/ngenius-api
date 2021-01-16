@@ -5,4 +5,5 @@ import com.ngenenius.api.config.TwitchIdentifier
 @Deprecated("Replace with one on List<TwitchIdentifer>")
 internal fun List<String>.toQueryParams(key: String) = this.joinToString("&") { "$key=$it" }
 
-internal fun Collection<TwitchIdentifier>.toQueryParams(prefix: String = "") = this.joinToString( "&" ) { it.asQueryParameter(prefix) }
+internal fun Collection<TwitchIdentifier>.toQueryParams(prefix: String = "") =
+    this.joinToString("&") { it.asQueryParameter(prefix) }

@@ -30,7 +30,7 @@ private const val response = "{\n" +
         "  }]\n" +
         "}"
 
-internal class TwitchUsersServiceTest: AbstractTwitchServiceTest<UserDetails>() {
+internal class TwitchUsersServiceTest : AbstractTwitchServiceTest<UserDetails>() {
 
     override val cache = Caffeine.newBuilder().build<TwitchIdentifier, UserDetails>()
 
@@ -42,7 +42,14 @@ internal class TwitchUsersServiceTest: AbstractTwitchServiceTest<UserDetails>() 
     fun setup() {
         twitchUsersService = TwitchUsersService(webClient, twitchStreamerProvider, cache)
 
-        whenever(twitchStreamerProvider.twitchIdentifiers(any())).thenReturn(listOf(TwitchIdentifier("44322889", "dallas")))
+        whenever(twitchStreamerProvider.twitchIdentifiers(any())).thenReturn(
+            listOf(
+                TwitchIdentifier(
+                    "44322889",
+                    "dallas"
+                )
+            )
+        )
     }
 
     @Test

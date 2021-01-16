@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import java.time.Duration
 
-private val logger = KotlinLogging.logger {  }
+private val logger = KotlinLogging.logger { }
 
 /**
  * This abstract base class will suffice for GET requests to the Twitch API.
@@ -24,7 +24,7 @@ private val logger = KotlinLogging.logger {  }
  * To paginate results, twitch can optionally return a 'cursor' reference, which must
  * be sent back to them in the 'after' query parameter in order to receive the next page of results.
  */
-abstract class AbstractTwitchPaginatedService<VALUE> (
+abstract class AbstractTwitchPaginatedService<VALUE>(
     /**
      * The twitch web client
      */
@@ -45,7 +45,7 @@ abstract class AbstractTwitchPaginatedService<VALUE> (
      * The prefix for all identity related query params for this service. Optional
      */
     private val queryPrefix: String = ""
-): CacheUsage {
+) : CacheUsage {
 
     /**
      * A reverse-mapping function to take an object retrieved from Twitch and transform it
@@ -66,7 +66,7 @@ abstract class AbstractTwitchPaginatedService<VALUE> (
 
     protected fun findByKeys(identifiers: Collection<TwitchIdentifier>): Collection<VALUE> {
         return cache
-            .getAll(identifiers) {executeTwitchRequest(it.toMutableSet())}
+            .getAll(identifiers) { executeTwitchRequest(it.toMutableSet()) }
             .values
             .toSet()
     }
@@ -82,7 +82,7 @@ abstract class AbstractTwitchPaginatedService<VALUE> (
             identifiers.removeAll(toBeDropped)
         }
         val requestUri = "$rootApiUri?${identifiers.toQueryParams(queryPrefix)}&first=${identifiers.size}"
-        logger.trace{ "Request URI is $requestUri"}
+        logger.trace { "Request URI is $requestUri" }
 
         val values = twitchWebClient.get()
             .uri(requestUri)
@@ -91,8 +91,9 @@ abstract class AbstractTwitchPaginatedService<VALUE> (
                 { !it.is2xxSuccessful },
                 { Mono.just(IllegalStateException("Twitch API Received Status Code: ${it.statusCode()} - Try again later.")) })
             .bodyToMono(valueTypeReference)
-            .map{ it.data }
-            .block(Duration.ofSeconds(30L)) ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
+            .map { it.data }
+            .block(Duration.ofSeconds(30L))
+            ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
 
         val keyed = values.map { identifierTransformer(it) to it }.toMap()
 
@@ -140,7 +141,7 @@ interface CacheUsage {
  * will be alerted, since this means that we have configured the user incorrectly or that user no longer
  * exists. Either way we should update our configuration.
  */
-object PreferCache: CacheUsage {
+object PreferCache : CacheUsage {
     override val expectPerfectCaching = true
 }
 
@@ -149,6 +150,6 @@ object PreferCache: CacheUsage {
  * different circumstances.  The example of this is the Get Streams API, which only returns users if they are
  * live streaming at the time of the request, thus, we should not alert if we have a cache miss as this is expected.
  */
-object PreferRealtime: CacheUsage {
+object PreferRealtime : CacheUsage {
     override val expectPerfectCaching = false
 }
