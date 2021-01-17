@@ -113,8 +113,13 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
 
         methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
 
-        assertThat(cache.asMap()).hasSize(2)
-            .containsKeys(TwitchIdentifier(displayName = "channel1"), TwitchIdentifier(displayName = "channel2"))
+        assertThat(cache.asMap()).hasSize(4)
+            .containsKeys(
+                TwitchIdentifier(displayName = "channel1"),
+                TwitchIdentifier(displayName = "channel2"),
+                TwitchIdentifier(id = "1"),
+                TwitchIdentifier(id = "2")
+            )
     }
 
     @MethodSource("publicMethods")
