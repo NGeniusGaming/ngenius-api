@@ -1,5 +1,6 @@
 package com.ngenenius.api.config
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.ngenenius.api.model.platform.StreamingProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -46,6 +47,7 @@ data class ChannelProperties(
      */
     val tabs: List<StreamingTab>
 ) {
+    @JsonIgnore
     val twitchIdentifier = TwitchIdentifier(id, displayName)
 }
 
