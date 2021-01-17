@@ -31,88 +31,95 @@ ngenius:
       tournament:
         display: true
   streamer:
+    # The id or display-name can be left blank if one is unknown.
+    # To query for user details when filling out this form,
+    # One can use https://api.ngeniusgaming.us/v1/twitch/users/login/{display-name}
+    # Where {display-name} is the case sensitive display name of a Twitch User.
+    #
+    # An empty response means the display name was not found with Twitch.
+    # The values that belong in this config are `id` & `display_name`.
     channels:
-      - id: NGeniusGaming
+      - id: 255716703
         display-name: NGeniusGaming
         platform: twitch
         tabs:
           - team-view
-      - id: CD_Mangaka
+      - id: 42584119
         display-name: CD_Mangaka
         platform: twitch
         tabs:
           - team-view
-      - id: Dashr40
+      - id: 32485164
         display-name: Dashr40
         platform: twitch
         tabs:
           - team-view
-      - id: ICrazyJI
+      - id: 89533645
         display-name: ICrazyJI
         platform: twitch
         tabs:
           - team-view
-      - id: SetTopVox
+      - id: 68766069
         display-name: SetTopVox
         platform: twitch
         tabs:
           - team-view
-      - id: FirstOfMankind
+      - id: 84534801
         display-name: FirstOfMankind
         platform: twitch
         tabs:
           - team-view
-      - id: YiinJa
+      - id: 30968987
         display-name: YiinJa
         platform: twitch
         tabs:
           - team-view
-      - id: Natejesty
+      - id: 104671799
         display-name: Natejesty
         platform: twitch
         tabs:
           - team-view
-      - id: NGEN_FloridaMan
+      - id: 475010956
         display-name: NGEN_FloridaMan
         platform: twitch
         tabs:
           - team-view
-      - id: QueenHollow
+      - id: 42348416
         display-name: QueenHollow
         platform: twitch
         tabs:
           - team-view
-      - id: iCerby
+      - id: 27418931
         display-name: iCerby
         platform: twitch
         tabs:
           - team-view
-      - id: MiniMattt
+      - id: 22496948
         display-name: MiniMattt
         platform: twitch
         tabs:
           - team-view
-      - id: Adanimo
+      - id: 30614894
         display-name: Adanimo
         platform: twitch
         tabs:
           - team-view
-      - id: AkihabaraArcade
+      - id: 147958388
         display-name: AkihabaraArcade
         platform: twitch
         tabs:
           - tournament
-      - id: milehighfightnight
+      - id: 274556678
         display-name: milehighfightnight
         platform: twitch
         tabs:
           - tournament
-      - id: onibakuman
+      - id: 160975580
         display-name: onibakuman
         platform: twitch
         tabs:
           - tournament
-      - id: wellbornsteak
+      - id: 29519871
         display-name: wellbornsteak
         platform: twitch
         tabs:

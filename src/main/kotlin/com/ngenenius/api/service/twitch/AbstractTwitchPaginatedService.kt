@@ -95,7 +95,15 @@ abstract class AbstractTwitchPaginatedService<VALUE>(
             .block(Duration.ofSeconds(30L))
             ?: throw NullPointerException("Received nothing from the Twitch API. Try again later!")
 
-        val keyed = values.map { identifierTransformer(it) to it }.toMap()
+        val keyed = values.map { identifierTransformer(it) to it }
+            // cache by id and display name
+            .flatMap{
+                listOf(
+                    TwitchIdentifier(id = it.first.id) to it.second,
+                    TwitchIdentifier(displayName = it.first.displayName) to it.second
+                )
+            }
+            .toMap()
 
         if (expectPerfectCaching) {
             checkImperfectCacheUsage(keyed.keys, identifiers)
