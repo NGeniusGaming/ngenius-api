@@ -57,8 +57,8 @@ data class TwitchIdentifier(val id: String = "", val displayName: String = "") {
 
     fun asQueryParameter(prefix: String = ""): String {
         val param = when {
+            id.isNotBlank() -> "id=$id"
             displayName.isNotBlank() -> "login=$displayName"
-            id.isNotBlank() -> "id=$id" // TODO: after config migration, this should be higher priority.
             else -> throw IllegalStateException("Both the id and display-name for a Twitch Identifier is blank!")
         }
 
