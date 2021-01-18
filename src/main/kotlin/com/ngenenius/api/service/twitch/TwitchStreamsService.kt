@@ -30,13 +30,8 @@ class TwitchStreamsService(
         object : ParameterizedTypeReference<TwitchResponse<StreamDetails>>() {}
 
     /**
-     * Retrieve [TwitchResponse<StreamDetails>] for the team view page.
+     * Retrieve [StreamDetails] for the provided [StreamingTab]
      */
-    fun teamViewDetails(): Collection<StreamDetails> = findByTab(StreamingTab.TEAM_VIEW)
-
-    /**
-     * Retrieve [TwitchResponse<StreamDetails>] for the tournament view page.
-     */
-    fun tournamentDetails(): Collection<StreamDetails> = findByTab(StreamingTab.TOURNAMENT)
+    fun streamDetails(tab: StreamingTab): Collection<StreamDetails> = findByTab(tab)
 
 }

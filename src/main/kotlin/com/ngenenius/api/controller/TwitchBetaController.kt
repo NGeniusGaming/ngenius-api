@@ -6,6 +6,7 @@ import com.ngenenius.api.model.twitch.TwitchResponse
 import com.ngenenius.api.model.twitch.UserDetails
 import com.ngenenius.api.service.twitch.TwitchStreamsService
 import com.ngenenius.api.service.twitch.TwitchUsersService
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -14,16 +15,16 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/twitch")
 class TwitchBetaController(
     private val twitchStreamsService: TwitchStreamsService,
-    private val twitchUsersService: TwitchUsersService
+    private val twitchUsersService: TwitchUsersService,
 ) {
 
     @GetMapping("/team-view")
     internal fun teamView(): TwitchResponse<StreamDetails> =
-        TwitchResponse(twitchStreamsService.teamViewDetails())
+        TwitchResponse(twitchStreamsService.streamDetails(StreamingTab.TEAM_VIEW))
 
     @GetMapping("/tournament")
     internal fun tournament(): TwitchResponse<StreamDetails> =
-        TwitchResponse(twitchStreamsService.tournamentDetails())
+        TwitchResponse(twitchStreamsService.streamDetails(StreamingTab.TOURNAMENT))
 
     @GetMapping("/users")
     internal fun users(): Collection<UserDetails> = twitchUsersService.users(StreamingTab.TEAM_VIEW)
