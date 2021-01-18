@@ -19,11 +19,11 @@ class TwitchBetaController(
 
     @GetMapping("/team-view")
     internal fun teamView(): TwitchResponse<StreamDetails> =
-        TwitchResponse(twitchStreamsService.teamViewDetails())
+        TwitchResponse(twitchStreamsService.streamDetails(StreamingTab.TEAM_VIEW))
 
     @GetMapping("/tournament")
     internal fun tournament(): TwitchResponse<StreamDetails> =
-        TwitchResponse(twitchStreamsService.tournamentDetails())
+        TwitchResponse(twitchStreamsService.streamDetails(StreamingTab.TOURNAMENT))
 
     @GetMapping("/users")
     internal fun users(): Collection<UserDetails> = twitchUsersService.users(StreamingTab.TEAM_VIEW)

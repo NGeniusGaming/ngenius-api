@@ -50,17 +50,16 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
         whenever(twitchStreamerProvider.twitchIdentifiers(eq(StreamingTab.TOURNAMENT))).thenReturn(tournament)
     }
 
-    @MethodSource("publicMethods")
+    @MethodSource("streamingTab")
     @ParameterizedTest
-    fun `Should query twitch for team view stream details`(methodUnderTest: MethodUnderTest) {
+    fun `Should query twitch for team view stream details`(tab: StreamingTab) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(200)
                 .setBody(validResponse)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        // a cheeky one-liner to extract the function from parameterized object and run it on our service.
-        val result = methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
+        val result = streamsService.streamDetails(tab)
 
         val objectMapper = jacksonObjectMapper()
         // the api extracts the data and reduces to a set.
@@ -69,9 +68,9 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
         assertThat(result).isEqualTo(expectedResult)
     }
 
-    @MethodSource("publicMethods")
+    @MethodSource("streamingTab")
     @ParameterizedTest
-    fun `Subsequent calls to this service should pull from the cache`(methodUnderTest: MethodUnderTest) {
+    fun `Subsequent calls to this service should pull from the cache`(tab: StreamingTab) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(200)
                 .setBody(validResponse)
@@ -79,21 +78,21 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
         )
 
         // call multiple times quick.
-        (0..10).map { methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() } }
+        (0..10).map { streamsService.streamDetails(tab) }
 
         assertThat(twitchApiMockServer.requestCount).isEqualTo(1)
     }
 
-    @MethodSource("publicMethods")
+    @MethodSource("streamingTab")
     @ParameterizedTest
-    fun `Should hit the helix streams endpoint`(methodUnderTest: MethodUnderTest) {
+    fun `Should hit the helix streams endpoint`(tab: StreamingTab) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(200)
                 .setBody(validResponse)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
+        streamsService.streamDetails(tab)
 
         val request = twitchApiMockServer.takeRequest(5L, TimeUnit.SECONDS)
 
@@ -102,16 +101,16 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
 
     }
 
-    @MethodSource("publicMethods")
+    @MethodSource("streamingTab")
     @ParameterizedTest
-    fun `Successfully getting stream details caches the response`(methodUnderTest: MethodUnderTest) {
+    fun `Successfully getting stream details caches the response`(tab: StreamingTab) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(200)
                 .setBody(validResponse)
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         )
 
-        methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() }
+        streamsService.streamDetails(tab)
 
         assertThat(cache.asMap()).hasSize(4)
             .containsKeys(
@@ -122,14 +121,14 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
             )
     }
 
-    @MethodSource("publicMethods")
+    @MethodSource("streamingTab")
     @ParameterizedTest
-    fun `A non-successful response status code should throw an exception`(methodUnderTest: MethodUnderTest) {
+    fun `A non-successful response status code should throw an exception`(tab: StreamingTab) {
         twitchApiMockServer.enqueue(
             MockResponse().setResponseCode(404)
         )
 
-        assertThatThrownBy { methodUnderTest.fn.let { theMethodUnderTest -> streamsService.theMethodUnderTest() } }
+        assertThatThrownBy { streamsService.streamDetails(tab) }
             .isExactlyInstanceOf(IllegalStateException::class.java)
             .hasMessage("Twitch API Received Status Code: 404 NOT_FOUND - Try again later.")
 
@@ -140,9 +139,9 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
 
         @JvmStatic
         @Suppress("unused")
-        fun publicMethods() = listOf(
-            MethodUnderTest("teamViewDetails()") { teamViewDetails() },
-            MethodUnderTest("tournamentDetails()") { tournamentDetails() }
+        fun streamingTab() = listOf(
+            StreamingTab.TEAM_VIEW,
+            StreamingTab.TOURNAMENT
         )
     }
 
