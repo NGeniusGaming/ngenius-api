@@ -2,14 +2,19 @@ package com.ngenenius.api.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.ngenenius.api.model.platform.StreamingTab
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.convert.converter.Converter
+import org.springframework.format.FormatterRegistry
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
@@ -63,4 +68,20 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
             }
         }
     }
+
+    @Bean
+    fun webMvcConfigurer(defaultObjectMapper: ObjectMapper): WebMvcConfigurer {
+        return object: WebMvcConfigurer {
+            override fun addFormatters(registry: FormatterRegistry) {
+                registry.addConverter(StringToStreamingTabConverter(defaultObjectMapper))
+            }
+        }
+    }
+}
+
+/**
+ * Delegate to Jackson to convert from a string to a [StreamingTab] when used as a Path parameter.
+ */
+class StringToStreamingTabConverter(private val objectMapper: ObjectMapper): Converter<String, StreamingTab> {
+    override fun convert(source: String): StreamingTab? = objectMapper.readValue("\"$source\"")
 }

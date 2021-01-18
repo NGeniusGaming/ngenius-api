@@ -13,7 +13,6 @@ class TwitchUserLoginController(private val twitchUsersService: TwitchUsersServi
 
     @GetMapping("/login/{login}")
     fun lookupUserByLogin(@PathVariable login: String): Collection<UserDetails> {
-        println("Received $login")
         return twitchUsersService.findUsersByLogin(login)
     }
 }
