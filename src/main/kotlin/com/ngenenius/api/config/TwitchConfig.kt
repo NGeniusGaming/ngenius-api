@@ -14,6 +14,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
@@ -33,20 +34,24 @@ class TwitchConfig {
     @Bean
     fun twitchAuthorizedClientManager(
         clientRegistrationRepository: ClientRegistrationRepository,
-        authorizedClientRepository: OAuth2AuthorizedClientRepository
+        authorizedClientRepository: OAuth2AuthorizedClientRepository,
+        twitchAuthorizedClientProvider: OAuth2AuthorizedClientProvider
     ): OAuth2AuthorizedClientManager {
-        // declare which pieces of the OAuth2 Spec this provider should enable
-        val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-            .clientCredentials()
-            .refreshToken()
-            .build()
         // create a client manager with this authorized client repository
         val twitchAuthorizedClientManager = DefaultOAuth2AuthorizedClientManager(
             clientRegistrationRepository, authorizedClientRepository
         )
-        twitchAuthorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
+        twitchAuthorizedClientManager.setAuthorizedClientProvider(twitchAuthorizedClientProvider)
         return twitchAuthorizedClientManager
     }
+
+    // declare which pieces of the OAuth2 Spec this provider should enable
+    @Bean
+    fun twitchAuthorizedClientProvider(): OAuth2AuthorizedClientProvider =
+        OAuth2AuthorizedClientProviderBuilder.builder()
+            .clientCredentials()
+            .refreshToken()
+            .build()
 
     @Bean
     fun twitchObjectMapper(): ObjectMapper {

@@ -2,6 +2,7 @@ package com.ngenenius.api.service.twitch
 
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.AggregateTwitchResponse
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 /**
