@@ -17,6 +17,9 @@ val springCloudVersion: String by project
 val kotlinVersion: String by project
 val kotlinLogging: String by project
 val caffeineVersion: String by project
+val springdocVersion: String by project
+
+
 val mockitoKotlinVersion: String by project
 val assertJVersion: String by project
 
@@ -36,6 +39,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("io.github.microutils:kotlin-logging-jvm")
 	implementation("com.github.ben-manes.caffeine:caffeine")
+	implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	// literally only here to make IntelliJ happy - magic happens from the 'kapt' one. May not work with @ConstructorBinding?
@@ -60,6 +64,7 @@ dependencyManagement {
 			dependency("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
 			dependency("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion")
 			dependency("org.assertj:assertj-core:$assertJVersion")
+			dependency("org.springdoc:springdoc-openapi-ui:$springdocVersion")
 		}
 	}
 }
