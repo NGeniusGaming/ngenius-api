@@ -40,7 +40,7 @@ data class StreamDetails(
     val startedAt: String,
     val language: String,
     val thumbnailUrl: String,
-    val tagIds: Collection<String> = listOf()
+    val tagIds: Collection<String>? = listOf()
 ) : Base()
 
 /**
