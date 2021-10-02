@@ -50,7 +50,7 @@ dependencies {
 	testImplementation("org.mockito:mockito-inline")
 	testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin")
 	testImplementation("com.squareup.okhttp3:mockwebserver")
-	testImplementation("org.assertj:assertj-core:3.18.1")
+	testImplementation("org.assertj:assertj-core")
 }
 
 dependencyManagement {
