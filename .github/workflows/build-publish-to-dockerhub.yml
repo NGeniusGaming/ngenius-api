@@ -27,8 +27,8 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
         run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
       - name: Deploy to Kubernetes # Using https://github.com/steebchen/kubectl
-        uses: steebchen/kubectl@master
+        uses: steebchen/kubectl@v2
         with:
           config: ${{ secrets.KubeConfig }}
           version: v1.19
-          args: '"rollout restart deployment ngen-api -n ngen-api"'
+          command: rollout restart deployment ngen-api -n ngen-api
