@@ -1,6 +1,12 @@
 # NGenius API
 > An API for handling data with the ngenius-teamview application!
 
+## Requirements
+
+This project requires:
+- Java 11 (Any jdk will do!)
+- Docker (If you want to build an image locally.)
+
 ## Running
 
 To run this application, you'll need to provide some Twitch credentials! 

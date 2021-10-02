@@ -5,7 +5,7 @@
 package com.ngenenius.api.model.twitch
 
 import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import mu.KotlinLogging
 
@@ -27,16 +27,18 @@ open class Base {
 /**
  * The data object for [the Get Streams API](https://dev.twitch.tv/docs/api/reference#get-streams)
  */
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class StreamDetails(
     val id: String,
     val userId: String,
     val userName: String,
+    val userLogin: String,
     val gameId: String,
     val gameName: String,
     val type: String,
     val title: String,
     val viewerCount: Int,
+    val isMature: Boolean,
     val startedAt: String,
     val language: String,
     val thumbnailUrl: String,
@@ -48,7 +50,7 @@ data class StreamDetails(
  *
  * The email param is intentionally left off.  We don't need PII.
  */
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class UserDetails(
     val id: String,
     val broadcasterType: BroadcasterType,
