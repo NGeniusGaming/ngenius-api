@@ -27,8 +27,7 @@ jobs:
         run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
       - name: Deploy to Kubernetes # Using https://github.com/steebchen/kubectl
         uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KubeConfig }}
-          KUBECTL_VERSION: "1.18"
         with:
+          config: ${{ secrets.KubeConfig }}
+          version: v1.19
           args: '"rollout restart deployment ngen-api -n ngen-api"'
