@@ -1,0 +1,26 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Kubectl Tester
+
+on:
+  push:
+    branches-ignore: [ master ]
+
+jobs:
+  continuous-integration:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure Kubectl
+        uses: bwvolleyball/kubectl@master
+        with:
+          config: ${{ secrets.KubeConfig }}
+          version: v1.21.5
+          command: get pods -n ngen-api
+          persist: true
+      - name: Use Kubectl to Check Remote Version
+        run: |
+          kubectl version
