@@ -33,4 +33,6 @@ jobs:
           version: v1.21.5
           command: get pods -n ngen-api
       - name: Test Kubernetes
-        run: kubectl version
+        run: |
+          echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
+          kubectl version
