@@ -19,8 +19,7 @@ jobs:
         with:
           config: ${{ secrets.KubeConfig }}
           version: v1.21.5
-          command: get pods -n ngen-api
-          persist: true
       - name: Use Kubectl to Check Remote Version
-        run: |
-          kubectl version
+        run: kubectl version && kubectl get pods -n ngen-api
+      - name: Check Helm Version
+        run: helm version
