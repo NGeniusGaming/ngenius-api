@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Kubectl Tester
+name: Verify Helm Chart
 
 on:
   push:
@@ -20,7 +20,5 @@ jobs:
           config: ${{ secrets.KubeConfig }}
           kubectl_version: v1.21.5
           helm_version: v3.7.0
-      - name: Use Kubectl to Check Remote Version
-        run: kubectl version && kubectl get pods -n ngen-api
-      - name: Check Helm Version
-        run: helm version
+      - name: Verify Helm Chart
+        run: helm template ngenius-api ./kubernetes/ngenius-api -n ngen-api | kubectl apply --dry-run=server -f -
