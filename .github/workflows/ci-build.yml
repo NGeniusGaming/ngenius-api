@@ -26,13 +26,3 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
         run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
-      - name: Test Kubernetes # Using https://github.com/steebchen/kubectl
-        uses: bwvolleyball/kubectl@master
-        with:
-          config: ${{ secrets.KubeConfig }}
-          version: v1.21.5
-          command: get pods -n ngen-api
-          persist: true
-      - name: Test Kubernetes
-        run: |
-          kubectl version

@@ -18,7 +18,8 @@ jobs:
         uses: bwvolleyball/kubectl@master
         with:
           config: ${{ secrets.KubeConfig }}
-          version: v1.21.5
+          kubectl_version: v1.21.5
+          helm_version: v3.7.0
       - name: Use Kubectl to Check Remote Version
         run: kubectl version && kubectl get pods -n ngen-api
       - name: Check Helm Version
