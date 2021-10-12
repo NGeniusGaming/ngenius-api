@@ -8,6 +8,8 @@ traefik:
   enabled: true
   domain: ngeniusgaming.us
 
+sha: "unknown"
+
 image:
   repository: ngeniusgaming/ngen-api
   pullPolicy: Always
@@ -26,7 +28,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+podAnnotations:
+  com.ngeniusgaming/name: "ngeniusgaming/ngen-api"
 
 podSecurityContext:
    fsGroup: 2000

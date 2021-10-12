@@ -20,6 +20,7 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        com.ngeniusgaming/commit-sha: {{ .Values.sha }}
       labels:
         {{- include "ngenius-api.selectorLabels" . | nindent 8 }}
     spec:
