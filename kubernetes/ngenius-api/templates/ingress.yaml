@@ -1,0 +1,28 @@
+{{- if .Values.traefik.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Chart.Name }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ngenius-api.labels" . | nindent 4 }}
+  {{- with .Values.traefik.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`api.{{ .Values.traefik.domain }}`)
+      kind: Rule
+      services:
+        - name: {{ .Chart.Name }}-service
+          kind: Service
+          port: 8080
+  tls:
+    certResolver: letsencrypt
+    domains:
+      - main: {{ .Values.traefik.domain }}
+        sans: [ "*.{{ .Values.traefik.domain }}" ]
+{{- end }}
