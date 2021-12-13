@@ -65,6 +65,8 @@ dependencyManagement {
 			dependency("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion")
 			dependency("org.assertj:assertj-core:$assertJVersion")
 			dependency("org.springdoc:springdoc-openapi-ui:$springdocVersion")
+			dependency("org.apache.logging.log4j:log4j-api:[2.15.0,)")
+			dependency("org.apache.logging.log4j:log4j-to-slf4j:[2.15.0,)")
 		}
 	}
 }
