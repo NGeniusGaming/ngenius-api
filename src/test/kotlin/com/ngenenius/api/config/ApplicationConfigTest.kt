@@ -1,11 +1,11 @@
 package com.ngenenius.api.config
 
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.util.UrlPathHelper.PATH_ATTRIBUTE
 import javax.servlet.http.HttpServletRequest

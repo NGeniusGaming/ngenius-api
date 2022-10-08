@@ -8,9 +8,9 @@ import com.ngenenius.api.config.TwitchStreamerProvider
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.model.twitch.StreamDetails
 import com.ngenenius.api.model.twitch.TwitchResponse
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import okhttp3.mockwebserver.MockResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -96,7 +96,7 @@ internal class TwitchStreamsServiceTest : AbstractTwitchServiceTest<StreamDetail
 
         val request = twitchApiMockServer.takeRequest(5L, TimeUnit.SECONDS)
 
-        assertThat(request.path)
+        assertThat(request?.path)
             .containsPattern("^/helix/streams\\?(user_login=[^\\d]+\\d&?){2}&first=2\$".toRegex().toPattern())
 
     }
