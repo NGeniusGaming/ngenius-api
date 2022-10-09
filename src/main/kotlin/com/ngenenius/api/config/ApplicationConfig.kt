@@ -71,7 +71,7 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
 
     @Bean
     fun webMvcConfigurer(defaultObjectMapper: ObjectMapper): WebMvcConfigurer {
-        return object: WebMvcConfigurer {
+        return object : WebMvcConfigurer {
             override fun addFormatters(registry: FormatterRegistry) {
                 registry.addConverter(StringToStreamingTabConverter(defaultObjectMapper))
             }
@@ -82,6 +82,6 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
 /**
  * Delegate to Jackson to convert from a string to a [StreamingTab] when used as a Path parameter.
  */
-class StringToStreamingTabConverter(private val objectMapper: ObjectMapper): Converter<String, StreamingTab> {
+class StringToStreamingTabConverter(private val objectMapper: ObjectMapper) : Converter<String, StreamingTab> {
     override fun convert(source: String): StreamingTab? = objectMapper.readValue("\"$source\"")
 }

@@ -2,7 +2,7 @@ package com.ngenenius.api.controller
 
 import com.ngenenius.api.model.platform.StreamingTab
 import com.ngenenius.api.service.twitch.TwitchStreamsService
-import com.nhaarman.mockitokotlin2.*
+import org.mockito.kotlin.*
 import org.junit.jupiter.api.Test
 
 internal class TwitchBetaControllerTest {

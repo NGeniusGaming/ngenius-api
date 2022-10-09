@@ -68,4 +68,4 @@ spec:
       volumes:
         # the root filesystem is read only, so we must mount /tmp
         - name: tmp
-          emptyDir: {}
+          emptyDir: { }

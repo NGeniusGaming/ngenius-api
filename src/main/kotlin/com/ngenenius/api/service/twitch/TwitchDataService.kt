@@ -29,7 +29,7 @@ class TwitchDataService(
             .toMap()
 
         return users
-            .map{ AggregateTwitchResponse(it, streams[it.id]) }
+            .map { AggregateTwitchResponse(it, streams[it.id]) }
             .sortedWith(aggregateSorter)
             .onEachIndexed { index, response -> response.index = index }
     }
@@ -43,7 +43,7 @@ private val nonNullStream: Comparator<AggregateTwitchResponse> = compareBy { it.
 /**
  * As a sample, sort by total channel views.
  */
-private val higherTotalViewCount: Comparator<AggregateTwitchResponse> = compareByDescending{ it.user.viewCount }
+private val higherTotalViewCount: Comparator<AggregateTwitchResponse> = compareByDescending { it.user.viewCount }
 
 /**
  * Chain the sorters together into a single sorting function.

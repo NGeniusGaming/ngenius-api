@@ -10,6 +10,6 @@ spec:
   containers:
     - name: wget
       image: busybox
-      command: ['wget']
-      args: ['{{ .Chart.Name }}-service:{{ .Values.service.port }}']
+      command: [ 'wget' ]
+      args: [ '{{ .Chart.Name }}-service:{{ .Values.service.port }}' ]
   restartPolicy: Never

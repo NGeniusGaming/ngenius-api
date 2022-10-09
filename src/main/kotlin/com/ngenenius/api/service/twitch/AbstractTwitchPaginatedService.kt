@@ -97,7 +97,7 @@ abstract class AbstractTwitchPaginatedService<VALUE>(
 
         val keyed = values.map { identifierTransformer(it) to it }
             // cache by id and display name
-            .flatMap{
+            .flatMap {
                 listOf(
                     TwitchIdentifier(id = it.first.id) to it.second,
                     TwitchIdentifier(displayName = it.first.displayName) to it.second
