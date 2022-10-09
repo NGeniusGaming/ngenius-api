@@ -21,11 +21,23 @@ jobs:
           java-version: '11'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Build and Test
+        run: ./gradlew build test
+      # build the x86 image
+      - name: x86 Docker Image
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        run: ./gradlew build test bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
+        run: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
+      # build the arm image
+      - name: arm Docker Image
+        uses: pguyot/arm-runner-action@v2
+        base_image: raspios_lite_arm64:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
+          DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
+        commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
+
 # Not currently running this project anywhere, so disabling helm things.
 #      - name: Configure kubectl and helm
 #        uses: bwvolleyball/k8s-toolkit@v1.0.0
