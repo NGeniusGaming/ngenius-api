@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.FormatterRegistry
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -57,16 +57,14 @@ class ApplicationConfig(private val securityProperties: SecurityProperties) {
      * This API is open, but security must be auto-configured in order to deal with OAuth2 clients.
      */
     @Bean
-    fun mvcSecurityAdapter(): WebSecurityConfigurerAdapter {
-        return object : WebSecurityConfigurerAdapter() {
-            override fun configure(http: HttpSecurity) {
-                http.cors()
-                    .and()
-                    .authorizeRequests()
-                    .anyRequest()
-                    .permitAll()
-            }
-        }
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.cors()
+            .and()
+            .authorizeRequests()
+            .anyRequest()
+            .permitAll()
+
+        return http.build()
     }
 
     @Bean
