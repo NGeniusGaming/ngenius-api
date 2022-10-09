@@ -4,8 +4,8 @@
 name: Continuous Integration Build
 
 on:
-  pull_request:
-    branches: [ master ]
+  push:
+    branches-ignore: [ master ]
 
 jobs:
   continuous-integration:
@@ -32,8 +32,9 @@ jobs:
       # build the arm image
       - name: arm Docker Image
         uses: pguyot/arm-runner-action@v2
-        base_image: raspios_lite_arm64:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
+        with:
+          base_image: raspios_lite_arm64:latest
+          commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
