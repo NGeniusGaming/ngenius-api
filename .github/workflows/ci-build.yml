@@ -36,5 +36,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
         with:
+          import_github_env: 'yes'
           base_image: raspios_lite_arm64:latest
           commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=snapshot -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD

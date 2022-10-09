@@ -32,11 +32,13 @@ jobs:
       # build the arm image
       - name: arm Docker Image
         uses: pguyot/arm-runner-action@v2
-        base_image: raspios_lite_arm64:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DockerHubUsername }}
           DOCKER_PASSWORD: ${{ secrets.DockerHubAPiKey }}
-        commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
+        with:
+          import_github_env: 'yes'
+          base_image: raspios_lite_arm64:latest
+          commands: ./gradlew bootBuildImage -Pdocker.publish -Pdocker.tag=release -Pdocker.username=$DOCKER_USERNAME -Pdocker.password=$DOCKER_PASSWORD
 
 # Not currently running this project anywhere, so disabling helm things.
 #      - name: Configure kubectl and helm
