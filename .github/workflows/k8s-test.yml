@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 # Not currently running this project anywhere, so disabling helm things.
 #      - name: Configure Kubectl
 #        uses: bwvolleyball/k8s-toolkit@v1.0.0

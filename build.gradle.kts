@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.ngenenius.api"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 val springBootVersion: String by project
 val springCloudVersion: String by project
@@ -77,7 +77,7 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
